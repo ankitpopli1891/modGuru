@@ -1,0 +1,45 @@
+<resources>
+
+    <string name="app_name">|GURU|</string>
+    <string name="submit">Submit</string>
+    <string name="blank"></string>
+    <string name="summary">Summary</string>
+    <string name="view_ans">Answers &amp; Explanations</string>
+    <string name="createquiz">Create Quiz</string>
+    <string name="enter_ques">Enter the Question</string>
+    <string name="enter_opt">Enter Option</string>
+    <string name="enter_author">Author Name</string>
+    <string name="enter_topic">Topic</string>
+    <string name="enter_time">Time Limit (in Minutes)</string>
+    <string name="enter_pass">Password</string>
+    <string name="add_ques">Add Question</string>
+    <string name="quiz_completed">Save Quiz</string>
+    <string name="enter_notes">Explanation OR Notes (Optional)</string>
+    <string name="a">(A)</string>
+    <string name="b">(B)</string>
+    <string name="c">(C)</string>
+    <string name="d">(D)</string>
+    <string name="startquiz">Start Quiz</string>
+    <string name="editquiz">Edit Quiz</string>
+    <string name="delquiz">Delete Quiz</string>
+    <string name="broadcastquiz">Broadcast Quiz</string>
+    <string name="showresult">View Result</string>
+    <string name="description">Now no need to evaluate Answers!!</string>
+    <string name="describe">Evaluation was never so Simple!!\n|GURU| - A Perfect App for all Teachers.</string>
+    <string name="action_settings">Settings</string>
+    <string name="designed_by">Designed &amp; Developed By:</string>
+    <string name="gurupromotion">Aakash Application Development Team\n
+        Maharaja Agrasen Institute Of Technology</string>
+    <string name="menu_abt">About</string>
+    <string name="menu_help">Help</string>
+    <string name="menu_import">Import Quiz File</string>
+    <string name="menu_settings">Settings</string>
+
+    <string-array name="selectGraphView">
+        <item>Bar Graph</item>
+        <item>Stacked Bar Graph</item>
+        <item>Line Graph</item>
+        <item>Textual Representation</item>
+    </string-array>
+
+</resources>
