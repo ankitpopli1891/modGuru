@@ -40,6 +40,7 @@
         <item>Stacked Bar Graph</item>
         <item>Line Graph</item>
         <item>Textual Representation</item>
+        <item>Question wise Pie Chart</item>
     </string-array>
 
 </resources>

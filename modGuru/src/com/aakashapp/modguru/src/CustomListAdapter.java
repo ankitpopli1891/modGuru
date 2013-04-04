@@ -48,8 +48,8 @@ public class CustomListAdapter extends SimpleAdapter {
 				@Override
 				public void onClick(View v) {
 					Log.e("asdasd", ""+pos+":");
-					CreateQuizActivity.quizData.deleteQuestion(pos);
-					CreateQuizActivity.refreshQuestionList();
+					((CreateQuizActivity)CustomListAdapter.this.parent).quizData.deleteQuestion(pos);
+					((CreateQuizActivity)CustomListAdapter.this.parent).refreshQuestionList();
 				}
 			});
 		}
