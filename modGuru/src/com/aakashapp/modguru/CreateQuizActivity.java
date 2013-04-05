@@ -28,15 +28,15 @@ public class CreateQuizActivity extends Activity {
 	EditText editTextQuestion, editTextOpt[], editTextNotes;
 	CheckBox checkBox[];
 	Button b_add_ques, b_create_quiz;
-	public static QuizData quizData;
+	public QuizData quizData;
 	ListView listViewQuestions;
 	GestureDetector detector;
 	RelativeLayout masterContainer;
-	static int atQues;
+	int atQues;
 	String file, author, topic, timer, password;
 	boolean newQuiz;
-	static ArrayList<HashMap<String, String>> listQuestions;
-	static CustomListAdapter adapter;
+	ArrayList<HashMap<String, String>> listQuestions;
+	CustomListAdapter adapter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -257,7 +257,7 @@ public class CreateQuizActivity extends Activity {
 
 		atQues = -1;
 		if(!newQuiz) {
-			///////////////////////////////////////////////////parse Quiz
+			//////////parse Quiz
 		}
 	}
 
@@ -274,7 +274,7 @@ public class CreateQuizActivity extends Activity {
 		refreshQuestionList();
 	}
 
-	public static void refreshQuestionList() {
+	public void refreshQuestionList() {
 		int c = 0;
 		listQuestions.clear();
 		ArrayList<String> questions = quizData.getQuestions();
@@ -285,7 +285,8 @@ public class CreateQuizActivity extends Activity {
 			hashMap.put("ques", q);
 			listQuestions.add(hashMap);
 		}
-		adapter.notifyDataSetChanged();
+		adapter = new CustomListAdapter(CreateQuizActivity.this, listQuestions, R.layout.ques_list_layout, new String[]{"count", "ques"}, new int[]{R.id.textViewQuesNo, R.id.textViewListQuestion});
+		listViewQuestions.setAdapter(adapter);
 		atQues=-1;
 	}
 
