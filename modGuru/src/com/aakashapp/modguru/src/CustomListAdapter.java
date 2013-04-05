@@ -43,16 +43,16 @@ public class CustomListAdapter extends SimpleAdapter {
 				String text=data==null?"":data.toString();
 				((TextView)view.findViewById(to[i])).setText(text);
 			}
+		}
 			pos = position;
 			view.findViewById(R.id.buttonDeleteQuestion).setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
 					Log.e("asdasd", ""+pos+":");
-					CreateQuizActivity.quizData.deleteQuestion(pos);
-					CreateQuizActivity.refreshQuestionList();
+					((CreateQuizActivity)CustomListAdapter.this.parent).quizData.deleteQuestion(pos);
+					((CreateQuizActivity)CustomListAdapter.this.parent).refreshQuestionList();
 				}
 			});
-		}
 		return view;
 	}
 }
