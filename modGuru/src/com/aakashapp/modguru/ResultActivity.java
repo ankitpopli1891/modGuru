@@ -64,9 +64,9 @@ public class ResultActivity extends Activity {
 				if(arg2==2)
 					showLineGraph();
 				if(arg2==3)
-					showTabularForm();
-				if(arg2==4)
 					showPieChart();
+				if(arg2==4)
+					showTabularForm();
 			}
 
 			@Override
@@ -74,8 +74,6 @@ public class ResultActivity extends Activity {
 			}
 		});
 	}
-
-
 
 	protected void showPieChart() {
 		SeekBar seekBar = new SeekBar(ResultActivity.this);
@@ -118,7 +116,7 @@ public class ResultActivity extends Activity {
 
 		CategorySeries distributionSeries = new CategorySeries("Student Performance");
 		for(int i=0 ;i < distribution.length;i++){
-			distributionSeries.add(distribution[i]+"% "+code[i], distribution[i]);
+			distributionSeries.add(String.format("%.02f",(float)distribution[i])+"% "+code[i], (float)distribution[i]);
 		}   
 
 		DefaultRenderer defaultRenderer  = new DefaultRenderer();    	
@@ -162,9 +160,9 @@ public class ResultActivity extends Activity {
 		for (int i=0 ; i<totalResults; i++)
 			for (int j=0; j<totalQuestions;j++)
 				totalCorrectAttempts+=resultSummaryData[i][j];
-		textViewResultData.append("\nAverage Score: "+ (float)((totalCorrectAttempts*100)/(totalQuestions*totalResults))+"%");
+		textViewResultData.append("\nAverage Score: "+ String.format("%.02f",(float)((totalCorrectAttempts*100)/(totalQuestions*totalResults)))+"%");
 
-		int max = 0, min = 0;
+		int max = 0, min = totalQuestions;
 		for (int i=0 ; i<totalResults; i++) {
 			int temp = 0;
 			for (int j=0; j<totalQuestions;j++)
@@ -174,8 +172,8 @@ public class ResultActivity extends Activity {
 			if(min>temp)
 				min=temp;
 		}
-		textViewResultData.append("\nHishest Marks Obtained: " + (float)(max*100)/totalQuestions+"%");
-		textViewResultData.append("\nLowest Marks Obtained: " + (float)(min*100)/totalQuestions+"%");
+		textViewResultData.append("\nHishest Marks Obtained: " + String.format("%.02f",(float)(max*100)/totalQuestions)+"%");
+		textViewResultData.append("\nLowest Marks Obtained: " + String.format("%.02f",(float)(min*100)/totalQuestions)+"%");
 
 		RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 		layoutParams.addRule(RelativeLayout.BELOW, textViewTitle.getId());

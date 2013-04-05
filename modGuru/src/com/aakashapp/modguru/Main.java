@@ -60,8 +60,8 @@ public class Main extends Activity {
 		case R.id.itemHelp:
 			Toast.makeText(Main.this, "Help", Toast.LENGTH_SHORT).show();
 			break;
-		case R.id.itemAbout:
-			showAboutDialog();
+		case R.id.itemSettings:
+			startActivity(new Intent(Main.this,ApplicationPreferences.class));
 			break;
 		default:
 			break;
@@ -69,7 +69,7 @@ public class Main extends Activity {
 		return super.onMenuItemSelected(featureId, item);
 	}
 
-	private void showAboutDialog() {
+	public void showAboutDialog() {
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
 		alert.setTitle("About " + getResources().getString(R.string.app_name));
 		alert.setView(((LayoutInflater)getSystemService(LAYOUT_INFLATER_SERVICE)).inflate(R.layout.about_app, null));

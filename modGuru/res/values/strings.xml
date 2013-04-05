@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
     <string name="app_name">|GURU|</string>
@@ -39,8 +40,11 @@
         <item>Bar Graph</item>
         <item>Stacked Bar Graph</item>
         <item>Line Graph</item>
-        <item>Textual Representation</item>
         <item>Question wise Pie Chart</item>
+        <item>Textual Representation</item>
     </string-array>
+
+    <string name="title_activity_mod_guru_preferences">ModGuruPreferencesActivity</string>
+    <string name="hello_world">Hello world!</string>
 
 </resources>

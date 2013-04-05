@@ -15,6 +15,7 @@ import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
@@ -28,10 +29,7 @@ import com.aakashapp.modguru.src.Option;
 import com.aakashapp.modguru.src.Parser;
 import com.aakashapp.modguru.src.Question;
 import com.aakashapp.modguru.src.Quiz;
-///////////////////////////////////////////////pending:
-////////////////////////////////////////////////changes.. save quiz prompt, single question fault.. 
-///////////////////////////////////////////////edit quiz
-///////////////////////////////////////////////about - version, feedback, what's new, legal info(3rd party - achart)
+
 public class QuizActivity extends Activity {
 
 	Button buttonNext, buttonPrevious, buttonSubmit, buttonViewAnswers, buttonFirst, buttonLast;
@@ -40,7 +38,6 @@ public class QuizActivity extends Activity {
 	LinearLayout linearLayoutFlags, linearLayoutQuizData, linearLayoutSummary;
 	RelativeLayout relativeLayoutNavigationButtons, masterContainer;
 	TextView textViewAtQues, textViewQuestion, textViewExplanation, textViewTimer, textViewSummary;
-	//ProgressBar progressBar;
 
 	String xmlFile;
 	Parser parser;
@@ -134,9 +131,8 @@ public class QuizActivity extends Activity {
 		for (int i=0; i<totalQuestions; i++) {
 			final int i1 = i;
 			b[i] = new Button(this);
+			b[i].setLayoutParams(new LayoutParams(48, 48));
 			b[i].setTextColor(Color.WHITE);
-			b[i].setScaleX(.8f);
-			b[i].setScaleY(.8f);
 			b[i].setGravity(Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL);
 			b[i].setTextSize(TypedValue.COMPLEX_UNIT_SP,18);
 			b[i].setBackgroundResource(R.drawable.button_checkbox_unattempted);
@@ -231,7 +227,6 @@ public class QuizActivity extends Activity {
 
 		submitted = true;
 		enableSwipe = false;
-		//progressBar.setProgress(progressBar.getMax());
 		timer.cancel();
 		min=0;
 		sec=0;
@@ -241,7 +236,6 @@ public class QuizActivity extends Activity {
 		quiz = parser.extractQuiz();
 		questions = quiz.getQuestions();
 		totalQuestions = questions.size();
-		//progressBar.setMax(totalQuestions+1);
 		answers = new Answers(totalQuestions);
 		result = new int[totalQuestions];
 		correctAnswers = new String[totalQuestions];
@@ -358,17 +352,6 @@ public class QuizActivity extends Activity {
 		textViewQuestion = (TextView) findViewById(R.id.textViewQuestion);
 		textViewExplanation = (TextView) findViewById(R.id.textViewExplanation);
 		textViewSummary = (TextView) findViewById(R.id.textViewSummary);
-
-		//progressBar = (ProgressBar) findViewById(R.id.progressBar1);
-		//String color = "#0088cc";
-		//final float[] roundedCorners = new float[] { 0, 5, 0, 5, 0, 5, 0, 5 };
-		//ShapeDrawable pgDrawable = new ShapeDrawable(new RoundRectShape(roundedCorners, null, null));
-		//pgDrawable.getPaint().setColor(Color.parseColor(color));
-		//ClipDrawable progress = new ClipDrawable(pgDrawable, Gravity.LEFT, ClipDrawable.HORIZONTAL);
-		//progressBar.setProgressDrawable(progress);
-		//progressBar.setFadingEdgeLength(3);
-		//progressBar.setBackgroundResource(android.R.drawable.progress_horizontal);
-		//progressBar.setProgress(progressBar.getMax());
 
 		detector = new GestureDetector(new MyGestureListener());
 	}

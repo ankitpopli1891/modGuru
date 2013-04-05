@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="Settings" >
+
+    <PreferenceCategory android:title="General Settings" >
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="general_stay_awake"
+            android:summary="Screen won&apos;t Black out while attempting Quiz."
+            android:title="Stay Awake" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="general_swipe_enabled"
+            android:summary="Use Swipe Gesture to Navigate between Questions while attempting Quiz."
+            android:title="Swipe Enabled" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Advanced Settings" >
+        <Preference android:title="Backup" />
+        <Preference android:title="Restore" />
+        <Preference android:title="Import File" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="About" >
+        <Preference
+            android:enabled="false"
+            android:key="about_build_version"
+            android:title="Build Version" />
+        <Preference
+            android:key="about_send_feedback"
+            android:title="Feedback" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Legal &amp; Privacy" >
+        <Preference android:title="Terms of Service" />
+        <Preference android:title="Privacy Policy" />
+        <Preference android:title="Open Source Attributions" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

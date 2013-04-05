@@ -24,22 +24,21 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.aakashapp.modguru.src.MyQuizDB;
 import com.aakashapp.modguru.src.Parser;
 import com.aakashapp.modguru.src.Quiz;
 
 public class SelectQuizActivity extends Activity {
 
 	ArrayList<HashMap<String, String>> listView;
-	ArrayList<String> author, topic;
-	TextView textViewFile, textViewPassword, textViewTimeLimit, textViewAuthor, textViewTopic;
+	//ArrayList<String> author, topic;
+	String file, password, timeLimit, author, topic;
 	int listSize;
 	Parser parser;
-	ListView listView1;
+	ListView listViewQuizList;
 	SimpleAdapter adapter;
+	HashMap<String, String> listValues;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -54,27 +53,23 @@ public class SelectQuizActivity extends Activity {
 		if(f.isDirectory() && f.exists()) {
 			String[] list = f.list();
 			listSize = list.length;
-			HashMap<String, String> listValues;
+			
 			for(int i=0;i<list.length;i++) {
-				MyQuizDB db = new MyQuizDB(SelectQuizActivity.this.getApplicationContext());
-				if(!db.contains(list[i])) {
-					//if(new File(list[i]).isFile()) {
-					try {
-						parser = new Parser(new FileInputStream(new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/CQ/" +list[i])));
-					} catch (Exception e) {
-						Log.e("ParserError", e.getMessage());
-					}
-					Quiz quiz = parser.extractQuiz();
-					listValues = new HashMap<String, String>();
-					listValues.put("topic", quiz.getTopic());
-					listValues.put("by", "By "+quiz.getAuthor());
-					listValues.put("score", quiz.getScore());
-					listValues.put("time", quiz.getTime());
-					listValues.put("date", quiz.getDate());
-					listValues.put("password", quiz.getPassword());
-					listValues.put("file", list[i]);
-					listView.add(listValues);
+				try {
+					parser = new Parser(new FileInputStream(new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/CQ/" +list[i])));
+				} catch (Exception e) {
+					Log.e("ParserError", e.getMessage());
 				}
+				Quiz quiz = parser.extractQuiz();
+				listValues = new HashMap<String, String>();
+				listValues.put("topic", quiz.getTopic());
+				listValues.put("author", "By "+quiz.getAuthor());
+				listValues.put("score", quiz.getScore());
+				listValues.put("time", quiz.getTime());
+				listValues.put("date", quiz.getDate());
+				listValues.put("password", quiz.getPassword());
+				listValues.put("file", list[i]);
+				listView.add(listValues);
 			}
 		}
 		else {
@@ -82,27 +77,24 @@ public class SelectQuizActivity extends Activity {
 			SelectQuizActivity.this.finish();
 		}
 
-		listView1 = (ListView) findViewById(R.id.listViewQuiz);
-		listView1.setFastScrollEnabled(true);
-		adapter = new SimpleAdapter(this, listView, R.layout.list_layout, new String[]{ "topic", "by", "score", "time", "file", "date", "password"}, new int[]{R.id.textViewTopic, R.id.textViewTopicCreator, R.id.textViewScore,R.id.textViewTimeLimit, R.id.textViewFileName, R.id.textViewDate, R.id.textViewPassword});
-		listView1.setAdapter(adapter);
-		listView1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+		listViewQuizList = (ListView) findViewById(R.id.listViewQuiz);
+		listViewQuizList.setFastScrollEnabled(true);
+		adapter = new SimpleAdapter(this, listView, R.layout.list_layout, new String[]{ "topic", "author", "score", "time", "file", "date", "password"}, new int[]{R.id.textViewTopic, R.id.textViewTopicCreator, R.id.textViewScore,R.id.textViewTimeLimit, R.id.textViewFileName, R.id.textViewDate, R.id.textViewPassword});
+		listViewQuizList.setAdapter(adapter);
+		listViewQuizList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
-				ListView listView = (ListView) arg0;
-				View view = listView.getChildAt(arg2);
-				textViewFile = (TextView) view.findViewById(R.id.textViewFileName);
-				textViewTimeLimit = (TextView) view.findViewById(R.id.textViewTimeLimit);
-
+				file = listView.get(arg2).get("file");
+				timeLimit = listView.get(arg2).get("time");
 
 				Intent i = new Intent(SelectQuizActivity.this, QuizActivity.class);
-				i.putExtra("file", textViewFile.getText().toString());
-				i.putExtra("time", textViewTimeLimit.getText().toString());
+				i.putExtra("file", file);
+				i.putExtra("time", timeLimit);
 				startActivity(i);
 			}
 		});
-		registerForContextMenu(listView1);
+		registerForContextMenu(listViewQuizList);
 	}
 
 
@@ -118,20 +110,19 @@ public class SelectQuizActivity extends Activity {
 	public boolean onContextItemSelected(MenuItem item) {
 		AdapterContextMenuInfo menuInfo = (AdapterContextMenuInfo) item.getMenuInfo();
 
-		View view = listView1.getChildAt((int) menuInfo.id);
-		textViewFile = (TextView) view.findViewById(R.id.textViewFileName);
-		textViewTimeLimit = (TextView) view.findViewById(R.id.textViewTimeLimit);
-		textViewPassword = (TextView) view.findViewById(R.id.textViewPassword);
-		textViewAuthor = (TextView) view.findViewById(R.id.textViewTopicCreator);
-		textViewTopic = (TextView) view.findViewById(R.id.textViewTopic);
+		file = listView.get((int) menuInfo.id).get("file"); 
+		timeLimit = listView.get((int) menuInfo.id).get("time");
+		password = listView.get((int) menuInfo.id).get("password");
+		author = listView.get((int) menuInfo.id).get("author");
+		topic = listView.get((int) menuInfo.id).get("file");
 
 		Intent i;
 		switch (item.getItemId()) {
 
 		case R.id.itemStartQuiz:
 			i = new Intent(SelectQuizActivity.this, QuizActivity.class);
-			i.putExtra("file", textViewFile.getText().toString());
-			i.putExtra("time", textViewTimeLimit.getText().toString());
+			i.putExtra("file", file);
+			i.putExtra("time", timeLimit);
 			startActivity(i);
 			break;
 
@@ -142,7 +133,7 @@ public class SelectQuizActivity extends Activity {
 		case R.id.itemDeleteQuiz:
 			deleteQuiz();
 			break;
-			
+
 		case R.id.itemEditQuiz:
 			editQuiz();
 			break;
@@ -169,13 +160,13 @@ public class SelectQuizActivity extends Activity {
 		alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
 				if(isPasswordCorrect(input.getText().toString())) {
-					String file = textViewFile.getText().toString();
+					
 					File f = new File(Environment.getExternalStorageDirectory()+"/CQ/"+file);
 					if(f.exists()) {
 						boolean delete = f.delete();
 						if(delete) {
 							Toast.makeText(SelectQuizActivity.this, "Quiz has been Deleted!!", Toast.LENGTH_SHORT).show();
-							recreate();
+							startActivity(SelectQuizActivity.this.getIntent());
 						}
 						else
 							Toast.makeText(SelectQuizActivity.this, "Insufficient Permissions to perform this Action!!", Toast.LENGTH_SHORT).show();
@@ -196,7 +187,6 @@ public class SelectQuizActivity extends Activity {
 		alert.show();
 	}
 
-
 	private void editQuiz() {
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
 		alert.setTitle("Password");
@@ -211,11 +201,11 @@ public class SelectQuizActivity extends Activity {
 			public void onClick(DialogInterface dialog, int whichButton) {
 				if(isPasswordCorrect(input.getText().toString())) {
 					Intent i = new Intent(SelectQuizActivity.this, QuizMetaDataActivity.class);
-					i.putExtra("file", textViewFile.getText().toString());
-					i.putExtra("author", textViewAuthor.getText().toString().substring(3));
-					i.putExtra("password", textViewPassword.getText().toString());
-					i.putExtra("timer", textViewTimeLimit.getText().toString());
-					i.putExtra("topic", textViewTopic.getText().toString());
+					i.putExtra("file", file);
+					i.putExtra("author", author);
+					i.putExtra("password", password);
+					i.putExtra("timer", timeLimit);
+					i.putExtra("topic", topic);
 					startActivity(i);
 				}
 				else
@@ -231,14 +221,12 @@ public class SelectQuizActivity extends Activity {
 		alert.show();
 	}
 
-
 	private boolean isPasswordCorrect(String password) {
-		if(textViewPassword.getText().toString().equals(password))
+		if(password.equals(password))
 			return true;
 		else
 			return false;
 	}
-
 
 	private void showResult() {
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
@@ -254,7 +242,7 @@ public class SelectQuizActivity extends Activity {
 			public void onClick(DialogInterface dialog, int whichButton) {
 				if(isPasswordCorrect(input.getText().toString())) {
 					Intent i = new Intent(SelectQuizActivity.this,ResultActivity.class);
-					i.putExtra("file", textViewFile.getText().toString());
+					i.putExtra("file", file);
 					startActivity(i);
 				}
 				else

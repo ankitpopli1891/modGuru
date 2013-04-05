@@ -67,6 +67,7 @@
                 android:layout_marginRight="50dp"
                 android:background="@drawable/bg_dark_gradient_rev"
                 android:fadingEdgeLength="20dp"
+                android:padding="3dp"
                 android:scrollbars="none" >
 
                 <LinearLayout
