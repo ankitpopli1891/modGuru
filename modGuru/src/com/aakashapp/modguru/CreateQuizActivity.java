@@ -257,7 +257,7 @@ public class CreateQuizActivity extends Activity {
 
 		atQues = -1;
 		if(!newQuiz) {
-			//////////parse Quiz
+			///////////////////////////////////////////////////parse Quiz
 		}
 	}
 
