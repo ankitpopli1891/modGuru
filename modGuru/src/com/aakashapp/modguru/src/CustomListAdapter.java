@@ -43,6 +43,7 @@ public class CustomListAdapter extends SimpleAdapter {
 				String text=data==null?"":data.toString();
 				((TextView)view.findViewById(to[i])).setText(text);
 			}
+		}
 			pos = position;
 			view.findViewById(R.id.buttonDeleteQuestion).setOnClickListener(new View.OnClickListener() {
 				@Override
@@ -52,7 +53,6 @@ public class CustomListAdapter extends SimpleAdapter {
 					((CreateQuizActivity)CustomListAdapter.this.parent).refreshQuestionList();
 				}
 			});
-		}
 		return view;
 	}
 }
