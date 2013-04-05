@@ -279,6 +279,7 @@ public class CreateQuizActivity extends Activity {
 		listQuestions.clear();
 		ArrayList<String> questions = quizData.getQuestions();
 		for (String q:questions) {
+			//problem here
 			c++;
 			HashMap<String, String> hashMap = new HashMap<String, String>();
 			hashMap.put("count", String.valueOf(c)+".");
