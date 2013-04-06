@@ -7,6 +7,7 @@ import java.util.HashMap;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,7 +16,7 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.Menu;
+import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,6 +25,7 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aakashapp.modguru.src.Parser;
@@ -32,8 +34,7 @@ import com.aakashapp.modguru.src.Quiz;
 public class SelectQuizActivity extends Activity {
 
 	ArrayList<HashMap<String, String>> listView;
-	//ArrayList<String> author, topic;
-	String file, password, timeLimit, author, topic;
+	String file, password, timeLimit, author, topic, totalQues;
 	int listSize;
 	Parser parser;
 	ListView listViewQuizList;
@@ -69,6 +70,7 @@ public class SelectQuizActivity extends Activity {
 				listValues.put("date", quiz.getDate());
 				listValues.put("password", quiz.getPassword());
 				listValues.put("file", list[i]);
+				listValues.put("totalQues", String.valueOf(quiz.getQuestions().size()));
 				listView.add(listValues);
 			}
 		}
@@ -79,7 +81,7 @@ public class SelectQuizActivity extends Activity {
 
 		listViewQuizList = (ListView) findViewById(R.id.listViewQuiz);
 		listViewQuizList.setFastScrollEnabled(true);
-		adapter = new SimpleAdapter(this, listView, R.layout.list_layout, new String[]{ "topic", "author", "score", "time", "file", "date", "password"}, new int[]{R.id.textViewTopic, R.id.textViewTopicCreator, R.id.textViewScore,R.id.textViewTimeLimit, R.id.textViewFileName, R.id.textViewDate, R.id.textViewPassword});
+		adapter = new SimpleAdapter(this, listView, R.layout.list_layout, new String[]{ "topic", "author", "score", "date"}, new int[]{R.id.textViewTopic, R.id.textViewTopicCreator, R.id.textViewScore, R.id.textViewDate});
 		listViewQuizList.setAdapter(adapter);
 		listViewQuizList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
@@ -87,16 +89,12 @@ public class SelectQuizActivity extends Activity {
 					long arg3) {
 				file = listView.get(arg2).get("file");
 				timeLimit = listView.get(arg2).get("time");
-
-				Intent i = new Intent(SelectQuizActivity.this, QuizActivity.class);
-				i.putExtra("file", file);
-				i.putExtra("time", timeLimit);
-				startActivity(i);
+				totalQues = listView.get(arg2).get("totalQues");
+				startQuiz();
 			}
 		});
 		registerForContextMenu(listViewQuizList);
 	}
-
 
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
@@ -113,17 +111,14 @@ public class SelectQuizActivity extends Activity {
 		file = listView.get((int) menuInfo.id).get("file"); 
 		timeLimit = listView.get((int) menuInfo.id).get("time");
 		password = listView.get((int) menuInfo.id).get("password");
-		author = listView.get((int) menuInfo.id).get("author");
-		topic = listView.get((int) menuInfo.id).get("file");
-
-		Intent i;
+		author = listView.get((int) menuInfo.id).get("author").substring(3);
+		topic = listView.get((int) menuInfo.id).get("topic");
+		totalQues = listView.get((int) menuInfo.id).get("totalQues");
+		
 		switch (item.getItemId()) {
 
 		case R.id.itemStartQuiz:
-			i = new Intent(SelectQuizActivity.this, QuizActivity.class);
-			i.putExtra("file", file);
-			i.putExtra("time", timeLimit);
-			startActivity(i);
+			startQuiz();
 			break;
 
 		case R.id.itemResult:
@@ -146,6 +141,36 @@ public class SelectQuizActivity extends Activity {
 		return super.onContextItemSelected(item);
 	}
 
+
+	private void startQuiz() {
+		AlertDialog.Builder alert = new AlertDialog.Builder(this);
+		alert.setTitle("Start Quiz");
+		
+		View view = ((LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.dialog_start_quiz_message, null);
+		((TextView)view.findViewById(R.id.textViewTotalQues)).setText("No. of Questions: " + totalQues);
+		((TextView)view.findViewById(R.id.textViewTimeLimit)).setText("Time Limit: " + timeLimit + " Minutes");
+		((TextView)view.findViewById(R.id.textViewInstructions)).setText("Instructions:" +
+				"\n1. Once you start the quiz, it will be marked as attempted, whether you complete it or not!" +
+				"\n2. When the Time Limit is over, your answers will be automatically submitted!!");
+		((TextView)view.findViewById(R.id.textViewLine01)).setText("Are you sure you want to Start the Quiz?");
+		alert.setView(view);
+		
+		alert.setPositiveButton("Yes, Go Ahead!!", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+				Intent i = new Intent(SelectQuizActivity.this, QuizActivity.class);
+				i.putExtra("file", file);
+				i.putExtra("time", timeLimit);
+				startActivity(i);
+			}
+		});
+
+		alert.setNegativeButton("No, Go Back!!", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+				
+			}
+		});
+		alert.show();
+	}
 
 	private void deleteQuiz() {
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
@@ -204,9 +229,9 @@ public class SelectQuizActivity extends Activity {
 					i.putExtra("file", file);
 					i.putExtra("author", author);
 					i.putExtra("password", password);
-					i.putExtra("timer", timeLimit);
+					i.putExtra("time", timeLimit);
 					i.putExtra("topic", topic);
-					startActivity(i);
+					startActivityForResult(i, 0);
 				}
 				else
 					Toast.makeText(SelectQuizActivity.this, "Incorrect Password!!", Toast.LENGTH_SHORT).show();
@@ -222,7 +247,7 @@ public class SelectQuizActivity extends Activity {
 	}
 
 	private boolean isPasswordCorrect(String password) {
-		if(password.equals(password))
+		if(this.password.equals(password))
 			return true;
 		else
 			return false;
@@ -252,27 +277,16 @@ public class SelectQuizActivity extends Activity {
 
 		alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
-
 			}
 		});
 		alert.show();
 	}
-
+	
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.quiz_list_menu, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onMenuItemSelected(int featureId, MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.itemImportFile:		
-			Toast.makeText(SelectQuizActivity.this, "Coming Soon", Toast.LENGTH_SHORT).show();
-			break;
-		default:
-			break;
-		}
-		return super.onMenuItemSelected(featureId, item);
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if (requestCode==0)
+			if (resultCode == Activity.RESULT_OK)
+				finish();
 	}
 }

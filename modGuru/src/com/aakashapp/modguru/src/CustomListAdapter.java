@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +30,6 @@ public class CustomListAdapter extends SimpleAdapter {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		Log.e("asdasdasddasd", ""+position+":");
 		final int pos;
 		View view=convertView;
 		if(view==null) {
@@ -48,11 +46,21 @@ public class CustomListAdapter extends SimpleAdapter {
 			view.findViewById(R.id.buttonDeleteQuestion).setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					Log.e("asdasd", ""+pos+":");
 					((CreateQuizActivity)CustomListAdapter.this.parent).quizData.deleteQuestion(pos);
 					((CreateQuizActivity)CustomListAdapter.this.parent).refreshQuestionList();
 				}
 			});
 		return view;
+	}
+	
+	@Override
+
+	public int getViewTypeCount() {                 
+	    return getCount();
+	}
+
+	@Override
+	public int getItemViewType(int position) {
+	    return position;
 	}
 }

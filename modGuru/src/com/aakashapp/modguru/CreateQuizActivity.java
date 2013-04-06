@@ -1,5 +1,7 @@
 package com.aakashapp.modguru;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -7,6 +9,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -21,6 +24,10 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.aakashapp.modguru.src.CustomListAdapter;
+import com.aakashapp.modguru.src.Option;
+import com.aakashapp.modguru.src.Parser;
+import com.aakashapp.modguru.src.Question;
+import com.aakashapp.modguru.src.Quiz;
 import com.aakashapp.modguru.src.QuizData;
 
 public class CreateQuizActivity extends Activity {
@@ -54,7 +61,7 @@ public class CreateQuizActivity extends Activity {
 
 		author = getIntent().getCharSequenceExtra("author").toString();
 		topic = getIntent().getCharSequenceExtra("topic").toString();
-		timer = getIntent().getCharSequenceExtra("timer").toString();
+		timer = getIntent().getCharSequenceExtra("time").toString();
 		password = getIntent().getCharSequenceExtra("password").toString();
 
 		initializeViews();
@@ -121,7 +128,6 @@ public class CreateQuizActivity extends Activity {
 				listViewQuestions.setVisibility(View.GONE);
 			}
 		});
-		listQuestions = new ArrayList<HashMap<String,String>>();
 		adapter = new CustomListAdapter(CreateQuizActivity.this, listQuestions, R.layout.ques_list_layout, new String[]{"count", "ques"}, new int[]{R.id.textViewQuesNo, R.id.textViewListQuestion});
 		listViewQuestions.setAdapter(adapter);
 		listViewQuestions.refreshDrawableState();
@@ -137,7 +143,11 @@ public class CreateQuizActivity extends Activity {
 
 	protected void writeQuizFile() {
 		try {
-			String file = String.valueOf(System.currentTimeMillis());
+			String file;
+			if(newQuiz)
+				file = String.valueOf(System.currentTimeMillis());
+			else
+				file = this.file;
 			quizData.writeToXML(file);
 		} catch (Exception e) {
 			Log.e("WriteFail", e.getMessage());
@@ -251,13 +261,36 @@ public class CreateQuizActivity extends Activity {
 		quizData.setMetaData(author, topic, timer, password);
 
 		listViewQuestions = (ListView) findViewById(R.id.listViewQuestions);
+		listQuestions = new ArrayList<HashMap<String,String>>();
 
 		masterContainer = (RelativeLayout) findViewById(R.id.newParentContainer);
 		detector = new GestureDetector(new MyGestureListener());
 
 		atQues = -1;
 		if(!newQuiz) {
-			///////////////////////////////////////////////////parse Quiz
+			Parser parser = null;
+			try {
+				parser = new Parser(new FileInputStream(new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/CQ/" +file)));
+			} catch (Exception e) {
+				Log.e("ParserError", e.getMessage());
+			}
+			Quiz quiz = parser.extractQuiz();
+			ArrayList<Question> questions = quiz.getQuestions();
+			for(Question q:questions) {
+				quizData.addQuestion(q.getQuestion());
+				Option[] options = q.getOptions();
+				String[] opts = new String[4];
+				String copt = "";
+				for(int i=0;i<4;i++) {
+					opts[i] = options[i].getOptionValue();
+					if(options[i].isOptionCorrectAnswer())
+						copt+= String.valueOf(i);
+				}
+				quizData.addOptions(opts);
+				quizData.setCorrectOpt(copt);
+				quizData.addNote(q.getNote());
+				refreshQuestionList();
+			}
 		}
 	}
 
@@ -281,7 +314,7 @@ public class CreateQuizActivity extends Activity {
 		for (String q:questions) {
 			c++;
 			HashMap<String, String> hashMap = new HashMap<String, String>();
-			hashMap.put("count", String.valueOf(c)+".");
+			hashMap.put("count", c+".");
 			hashMap.put("ques", q);
 			listQuestions.add(hashMap);
 		}

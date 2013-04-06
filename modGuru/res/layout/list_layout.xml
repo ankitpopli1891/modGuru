@@ -64,29 +64,6 @@
         android:visibility="visible" />
 
     <TextView
-        android:id="@+id/textViewFileName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/blank"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:visibility="gone" />
-
-    <TextView
-        android:id="@+id/textViewTimeLimit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/blank"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:visibility="gone" />
-
-    <TextView
-        android:id="@+id/textViewPassword"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/blank"
-        android:visibility="gone" />
-
-    <TextView
         android:id="@+id/textViewDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

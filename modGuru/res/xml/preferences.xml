@@ -4,7 +4,7 @@
 
     <PreferenceCategory android:title="General Settings" >
         <CheckBoxPreference
-            android:defaultValue="true"
+            android:defaultValue="false"
             android:key="general_stay_awake"
             android:summary="Screen won&apos;t Black out while attempting Quiz."
             android:title="Stay Awake" />

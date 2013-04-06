@@ -84,8 +84,8 @@ public final class R {
         public static final int TextView03=0x7f0c0033;
         public static final int buttonCreateNewQuiz=0x7f0c001a;
         public static final int buttonCreateQuiz=0x7f0c0045;
-        public static final int buttonDeleteQuestion=0x7f0c0052;
-        public static final int buttonOpen=0x7f0c004d;
+        public static final int buttonDeleteQuestion=0x7f0c0054;
+        public static final int buttonOpen=0x7f0c0051;
         public static final int buttonStartQuiz=0x7f0c001b;
         public static final int buttonViewAnswers=0x7f0c0039;
         public static final int button_add_ques=0x7f0c0016;
@@ -110,14 +110,13 @@ public final class R {
         public static final int editTextTopic=0x7f0c0042;
         public static final int graphView=0x7f0c0048;
         public static final int imageView1=0x7f0c0000;
-        public static final int itemBroadcast=0x7f0c0058;
-        public static final int itemDeleteQuiz=0x7f0c0057;
-        public static final int itemEditQuiz=0x7f0c0056;
-        public static final int itemHelp=0x7f0c0054;
-        public static final int itemImportFile=0x7f0c005a;
-        public static final int itemResult=0x7f0c0059;
-        public static final int itemSettings=0x7f0c0053;
-        public static final int itemStartQuiz=0x7f0c0055;
+        public static final int itemBroadcast=0x7f0c005a;
+        public static final int itemDeleteQuiz=0x7f0c0059;
+        public static final int itemEditQuiz=0x7f0c0058;
+        public static final int itemHelp=0x7f0c0056;
+        public static final int itemResult=0x7f0c005b;
+        public static final int itemSettings=0x7f0c0055;
+        public static final int itemStartQuiz=0x7f0c0057;
         public static final int linearLayout1=0x7f0c001d;
         public static final int linearLayoutFlags=0x7f0c0023;
         public static final int linearLayoutQuizData=0x7f0c0026;
@@ -147,20 +146,22 @@ public final class R {
         public static final int textView8=0x7f0c0002;
         public static final int textView9=0x7f0c0004;
         public static final int textViewAtQues=0x7f0c0020;
-        public static final int textViewDate=0x7f0c0050;
+        public static final int textViewDate=0x7f0c0052;
         public static final int textViewExplanation=0x7f0c0035;
-        public static final int textViewFileName=0x7f0c004e;
+        public static final int textViewInstructions=0x7f0c004c;
+        public static final int textViewLine01=0x7f0c004d;
         public static final int textViewListQuestion=0x7f0c001e;
         public static final int textViewPassword=0x7f0c002a;
-        public static final int textViewQuesNo=0x7f0c0051;
+        public static final int textViewQuesNo=0x7f0c0053;
         public static final int textViewQuestion=0x7f0c0027;
         public static final int textViewQuestions=0x7f0c0018;
-        public static final int textViewScore=0x7f0c004b;
+        public static final int textViewScore=0x7f0c004f;
         public static final int textViewSummary=0x7f0c0038;
-        public static final int textViewTimeLimit=0x7f0c004f;
+        public static final int textViewTimeLimit=0x7f0c004b;
         public static final int textViewTimer=0x7f0c0021;
-        public static final int textViewTopic=0x7f0c004a;
-        public static final int textViewTopicCreator=0x7f0c004c;
+        public static final int textViewTopic=0x7f0c004e;
+        public static final int textViewTopicCreator=0x7f0c0050;
+        public static final int textViewTotalQues=0x7f0c004a;
         public static final int tr1=0x7f0c0029;
         public static final int tr2=0x7f0c002c;
         public static final int tr3=0x7f0c002f;
@@ -175,13 +176,13 @@ public final class R {
         public static final int activity_result=0x7f030005;
         public static final int activity_select_quiz=0x7f030006;
         public static final int activity_splash_screen=0x7f030007;
-        public static final int list_layout=0x7f030008;
-        public static final int ques_list_layout=0x7f030009;
+        public static final int dialog_start_quiz_message=0x7f030008;
+        public static final int list_layout=0x7f030009;
+        public static final int ques_list_layout=0x7f03000a;
     }
     public static final class menu {
         public static final int main_menu=0x7f0b0000;
         public static final int quiz_list_context_menu=0x7f0b0001;
-        public static final int quiz_list_menu=0x7f0b0002;
     }
     public static final class string {
         public static final int a=0x7f07000f;

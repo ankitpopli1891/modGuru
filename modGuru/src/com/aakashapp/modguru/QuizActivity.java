@@ -5,10 +5,14 @@ import java.io.FileInputStream;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
+import android.os.PowerManager;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.GestureDetector;
@@ -31,7 +35,7 @@ import com.aakashapp.modguru.src.Question;
 import com.aakashapp.modguru.src.Quiz;
 
 public class QuizActivity extends Activity {
-
+	
 	Button buttonNext, buttonPrevious, buttonSubmit, buttonViewAnswers, buttonFirst, buttonLast;
 	Button b[];
 	CheckBox checkBox[];
@@ -50,8 +54,12 @@ public class QuizActivity extends Activity {
 	int totalQuestions, atQues, attemptedQuestions, progress;
 	int min, sec;
 	int result[];
-	boolean submitted, enableSwipe;
 	GestureDetector detector;
+
+	SharedPreferences sharedPrefs;
+	boolean submitted, enableSwipe, stayAwake;
+	PowerManager powerManager;
+	PowerManager.WakeLock wakeLock;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +67,6 @@ public class QuizActivity extends Activity {
 		setContentView(R.layout.activity_quiz);
 
 		xmlFile = getIntent().getCharSequenceExtra("file").toString();
-		Toast.makeText(QuizActivity.this, "Swipe Left or Right to Navigate!!", Toast.LENGTH_LONG).show();
 
 		initializeViews();
 		loadXML();
@@ -110,14 +117,15 @@ public class QuizActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				atQues=0;
-				enableSwipe = true;
+				enableSwipe = sharedPrefs.getBoolean("general_swipe_enabled", true);
 				linearLayoutQuizData.setVisibility(View.VISIBLE);
 				linearLayoutSummary.setVisibility(View.GONE);
 				textViewAtQues.setVisibility(View.VISIBLE);
 				for (int i=0; i<totalQuestions; i++)
 					b[i].setClickable(true);
 				refreshView();
-				Toast.makeText(QuizActivity.this, "Swipe Left or Right to Navigate!!", Toast.LENGTH_LONG).show();
+				if(enableSwipe)
+					Toast.makeText(QuizActivity.this, "Swipe Left or Right to Navigate!!", Toast.LENGTH_LONG).show();
 			}
 		});
 		masterContainer.setOnTouchListener(new View.OnTouchListener() {
@@ -147,6 +155,14 @@ public class QuizActivity extends Activity {
 			});
 		}
 		refreshView();
+		if(enableSwipe)
+			Toast.makeText(QuizActivity.this, "Swipe Left or Right to Navigate!!", Toast.LENGTH_LONG).show();
+		try {
+			if(stayAwake)
+				wakeLock.acquire();
+		} catch (Exception e) {
+			Log.e("WakeLock", e.getMessage(),e);
+		}
 	}
 	private void startCountdown(long timeInMillis) {
 		timer = new CountDownTimer(timeInMillis, 1000) {
@@ -321,8 +337,14 @@ public class QuizActivity extends Activity {
 	}
 	@SuppressWarnings("deprecation")
 	private void initializeViews() {
+		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+		powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
+		wakeLock = powerManager.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "quiz_stayAwake");
+
+		stayAwake = sharedPrefs.getBoolean("general_stay_awake", false);
+		enableSwipe = sharedPrefs.getBoolean("general_swipe_enabled", true);
+
 		submitted = false;
-		enableSwipe = true;
 		atQues = 0;
 		attemptedQuestions = 1;
 		try {
@@ -387,6 +409,16 @@ public class QuizActivity extends Activity {
 	public boolean dispatchTouchEvent(MotionEvent ev) {
 		super.dispatchTouchEvent(ev);
 		return detector.onTouchEvent(ev); 
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		try {
+			wakeLock.release();
+		} catch (Exception e) {
+			Log.e("WakeLock", e.getMessage(),e);
+		}
 	}
 
 	class MyGestureListener extends GestureDetector.SimpleOnGestureListener{
