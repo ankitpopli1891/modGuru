@@ -15,8 +15,8 @@
             android:title="Swipe Enabled" />
     </PreferenceCategory>
     <PreferenceCategory android:title="Advanced Settings" >
-        <Preference android:title="Backup" />
-        <Preference android:title="Restore" />
+        <Preference android:title="Backup Data" />
+        <Preference android:title="Restore Data" />
         <Preference android:title="Import File" />
     </PreferenceCategory>
     <PreferenceCategory android:title="About" >
@@ -29,9 +29,13 @@
             android:title="Feedback" />
     </PreferenceCategory>
     <PreferenceCategory android:title="Legal &amp; Privacy" >
-        <Preference android:title="Terms of Service" />
+        <Preference
+            android:key="lp_license"
+            android:title="Licenses" />
+        <Preference
+            android:key="lp_open_source"
+            android:title="Open Source Attributions" />
         <Preference android:title="Privacy Policy" />
-        <Preference android:title="Open Source Attributions" />
     </PreferenceCategory>
 
 </PreferenceScreen>

@@ -44,7 +44,4 @@
         <item>Textual Representation</item>
     </string-array>
 
-    <string name="title_activity_mod_guru_preferences">ModGuruPreferencesActivity</string>
-    <string name="hello_world">Hello world!</string>
-
 </resources>

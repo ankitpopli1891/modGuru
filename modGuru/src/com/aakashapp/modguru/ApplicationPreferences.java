@@ -16,16 +16,16 @@ public class ApplicationPreferences extends PreferenceActivity {
 
 	SharedPreferences preferences;
 	SharedPreferences.Editor editor;
-	
+
 	@SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		addPreferencesFromResource(R.xml.preferences);
-		
+
 		preferences = getPreferenceScreen().getSharedPreferences();
-		
+
 		loadPreferences();
 	}
 
@@ -47,7 +47,7 @@ public class ApplicationPreferences extends PreferenceActivity {
 				return false;
 			}
 		});
-		
+
 		/**
 		 * General Settings
 		 */
@@ -56,8 +56,7 @@ public class ApplicationPreferences extends PreferenceActivity {
 			public boolean onPreferenceChange(Preference preference, Object newValue) {
 				if(Boolean.parseBoolean(newValue.toString())) {
 					AlertDialog.Builder alert = new AlertDialog.Builder(ApplicationPreferences.this);
-					alert.setTitle("Warning!");
-					alert.setMessage("Increases Battery Consumption!!");
+					alert.setTitle("It Increases Battery Consumption!!");
 					alert.setPositiveButton("Nevermind, Stay Awake!", new DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
@@ -80,8 +79,29 @@ public class ApplicationPreferences extends PreferenceActivity {
 					editor.putBoolean("general_stay_awake", false);
 					editor.commit();
 				}
-				
-				
+				return false;
+			}
+		});
+		/**
+		 * Legal & Privacy
+		 */
+		((Preference) findPreference("lp_license")).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
+				Intent intent = new Intent(ApplicationPreferences.this,WebViewActivity.class);
+				intent.putExtra("title", "License");
+				intent.putExtra("url", "file:///android_asset/license.html");
+				startActivity(intent);
+				return false;
+			}
+		});
+		((Preference) findPreference("lp_open_source")).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
+				Intent intent = new Intent(ApplicationPreferences.this,WebViewActivity.class);
+				intent.putExtra("title", "Open Source Attributions");
+				intent.putExtra("url", "file:///android_asset/opensource.html");
+				startActivity(intent);
 				return false;
 			}
 		});
