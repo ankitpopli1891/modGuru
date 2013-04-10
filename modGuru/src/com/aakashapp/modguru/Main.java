@@ -58,7 +58,7 @@ public class Main extends Activity {
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.itemHelp:
-			Toast.makeText(Main.this, "Help", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, "Help", Toast.LENGTH_SHORT).show();
 			break;
 		case R.id.itemSettings:
 			startActivity(new Intent(Main.this,ApplicationPreferences.class));

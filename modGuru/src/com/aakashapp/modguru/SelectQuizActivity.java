@@ -145,13 +145,13 @@ public class SelectQuizActivity extends Activity {
 	private void startQuiz() {
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
 		alert.setTitle("Start Quiz");
-		
 		View view = ((LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.dialog_start_quiz_message, null);
 		((TextView)view.findViewById(R.id.textViewTotalQues)).setText("No. of Questions: " + totalQues);
 		((TextView)view.findViewById(R.id.textViewTimeLimit)).setText("Time Limit: " + timeLimit + " Minutes");
 		((TextView)view.findViewById(R.id.textViewInstructions)).setText("Instructions:" +
 				"\n1. Once you start the quiz, it will be marked as attempted, whether you complete it or not!" +
-				"\n2. When the Time Limit is over, your answers will be automatically submitted!!");
+				"\n2. When the Time Limit is over, your answers will be automatically submitted!!" +
+				"\n3. There's no negative marking.");
 		((TextView)view.findViewById(R.id.textViewLine01)).setText("Are you sure you want to Start the Quiz?");
 		alert.setView(view);
 		
@@ -166,7 +166,6 @@ public class SelectQuizActivity extends Activity {
 
 		alert.setNegativeButton("No, Go Back!!", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
-				
 			}
 		});
 		alert.show();
@@ -206,7 +205,6 @@ public class SelectQuizActivity extends Activity {
 
 		alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
-
 			}
 		});
 		alert.show();

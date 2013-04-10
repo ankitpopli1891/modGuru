@@ -5,7 +5,9 @@ import java.io.FileInputStream;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -17,6 +19,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.GestureDetector;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
@@ -35,7 +38,7 @@ import com.aakashapp.modguru.src.Question;
 import com.aakashapp.modguru.src.Quiz;
 
 public class QuizActivity extends Activity {
-	
+
 	Button buttonNext, buttonPrevious, buttonSubmit, buttonViewAnswers, buttonFirst, buttonLast;
 	Button b[];
 	CheckBox checkBox[];
@@ -110,7 +113,44 @@ public class QuizActivity extends Activity {
 		buttonSubmit.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				submitTest();
+				saveAnswer();
+				AlertDialog.Builder alert = new AlertDialog.Builder(QuizActivity.this);
+				alert.setTitle("Submit Quiz");
+
+				final View view = ((LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.dialog_start_quiz_message, null);
+				((TextView)view.findViewById(R.id.textViewTotalQues)).setText("No. of Questions: "+totalQuestions);
+				new Thread(new Runnable() {
+					@Override
+					public void run() {
+						while (min>0 || sec>0) {
+							runOnUiThread(new Runnable() {
+								@Override
+								public void run() {
+									((TextView)view.findViewById(R.id.textViewTimeLimit)).setText("Time Remaining: " + String.format("%02d:%02d", min, sec));
+								}
+							});
+							try {
+								Thread.sleep(1000);
+							} catch (InterruptedException e) {
+								Log.e("THREAD", "Sleep", e);
+							}
+						}
+					}
+				}).start();
+				((TextView)view.findViewById(R.id.textViewInstructions)).setText("No. of Unattempted Questions: " + (totalQuestions - attemptedQuestions + 1));
+				((TextView)view.findViewById(R.id.textViewLine01)).setText("Are You Sure You Want To Submit the Quiz ?");
+				alert.setView(view);
+
+				alert.setPositiveButton("Submit Quiz", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int whichButton) {
+						submitTest();
+					}
+				});
+				alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int whichButton) {
+					}
+				});
+				alert.show();
 			}
 		});	
 		buttonViewAnswers.setOnClickListener(new View.OnClickListener() {
@@ -171,7 +211,7 @@ public class QuizActivity extends Activity {
 				if(!submitted) {
 					min = (int) millisUntilFinished / (60*1000);
 					sec = (int) (millisUntilFinished % (60*1000))/1000;
-					textViewTimer.setText(min+":"+sec);
+					textViewTimer.setText(String.format("%02d:%02d", min, sec));
 				}
 			}
 			@Override
@@ -192,14 +232,14 @@ public class QuizActivity extends Activity {
 			result[atQues] = 1;
 		else 
 			result[atQues] = 0;
-	}
-	protected void submitTest() {
-		saveAnswer();
 		attemptedQuestions = 1;
 		for (int i=0; i<totalQuestions; i++) {
 			if(!answers.getAnswer(i).equals(""))
 				attemptedQuestions++;
 		}
+	}
+	protected void submitTest() {
+		saveAnswer();
 
 		int noca = 0;
 		for(int i:result)
@@ -304,7 +344,6 @@ public class QuizActivity extends Activity {
 			}
 			b[atQues].setText(String.valueOf(atQues + 1));
 			b[atQues].setBackgroundResource(R.drawable.button_checkbox_focused);
-			//progressBar.setProgress(attemptedQuestions);
 		}
 		else {
 			textViewExplanation.setText("Correct Answer: ");
@@ -454,5 +493,51 @@ public class QuizActivity extends Activity {
 			} 
 			return false;
 		}
+	}
+
+	@Override
+	public void onBackPressed() {
+		saveAnswer();
+		if(!submitted) {
+			AlertDialog.Builder alert = new AlertDialog.Builder(this);
+			alert.setTitle("Exit Quiz");
+
+			final View view = ((LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.dialog_start_quiz_message, null);
+			((TextView)view.findViewById(R.id.textViewTotalQues)).setText("No. of Questions: "+totalQuestions);
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					while (min>0 || sec>0) {
+						runOnUiThread(new Runnable() {
+							@Override
+							public void run() {
+								((TextView)view.findViewById(R.id.textViewTimeLimit)).setText("Time Remaining: " + String.format("%02d:%02d", min, sec));
+							}
+						});
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e) {
+							Log.e("THREAD", "Sleep", e);
+						}
+					}
+				}
+			}).start();
+			((TextView)view.findViewById(R.id.textViewInstructions)).setText("No. of Unattempted Questions: " + (totalQuestions - attemptedQuestions + 1));
+			((TextView)view.findViewById(R.id.textViewLine01)).setText("Are You Sure You Want To Exit the Quiz ?");
+			alert.setView(view);
+
+			alert.setPositiveButton("Submit & Exit", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int whichButton) {
+					QuizActivity.super.onBackPressed();
+				}
+			});
+			alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int whichButton) {
+				}
+			});
+			alert.show();
+		}
+		else
+			super.onBackPressed();
 	}
 }

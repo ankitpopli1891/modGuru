@@ -5,19 +5,20 @@
     android:padding="10dp" >
 
     <TextView
-        android:id="@+id/textViewTotalQues"
+        android:id="@+id/textViewTimeLimit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
         android:text="@string/blank"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
-        android:id="@+id/textViewTimeLimit"
+        android:id="@+id/textViewTotalQues"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@id/textViewTotalQues"
-        android:layout_alignParentRight="true"
+        android:layout_alignBaseline="@id/textViewTimeLimit"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@id/textViewTimeLimit"
         android:text="@string/blank"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 

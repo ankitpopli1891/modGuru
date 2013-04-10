@@ -129,7 +129,8 @@ public class CreateQuizActivity extends Activity {
 			}
 		});
 		adapter = new CustomListAdapter(CreateQuizActivity.this, listQuestions, R.layout.ques_list_layout, new String[]{"count", "ques"}, new int[]{R.id.textViewQuesNo, R.id.textViewListQuestion});
-		listViewQuestions.setAdapter(adapter);
+		if(listQuestions.size()>0)
+			listViewQuestions.setAdapter(adapter);
 		listViewQuestions.refreshDrawableState();
 
 		masterContainer.setOnTouchListener(new View.OnTouchListener() {
@@ -319,8 +320,13 @@ public class CreateQuizActivity extends Activity {
 			listQuestions.add(hashMap);
 		}
 		adapter = new CustomListAdapter(CreateQuizActivity.this, listQuestions, R.layout.ques_list_layout, new String[]{"count", "ques"}, new int[]{R.id.textViewQuesNo, R.id.textViewListQuestion});
-		listViewQuestions.setAdapter(adapter);
+		if(listQuestions.size()>0)
+			listViewQuestions.setAdapter(adapter);
 		atQues=-1;
+		if(listViewQuestions.getVisibility() == View.VISIBLE && listQuestions.size()<1) {
+			listViewQuestions.setAnimation(AnimationUtils.loadAnimation(CreateQuizActivity.this, R.anim.to_right));
+			listViewQuestions.setVisibility(View.GONE);
+		}
 	}
 
 	@Override
