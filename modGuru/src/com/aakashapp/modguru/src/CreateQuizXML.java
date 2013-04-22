@@ -10,17 +10,18 @@ import org.xmlpull.v1.XmlSerializer;
 import android.os.Environment;
 import android.util.Xml;
 
+import com.aakashapp.modguru.Main;
+
 public class CreateQuizXML {
 	File xmlFile;
 	FileOutputStream fileOutputStream;
 	XmlSerializer serializer;
 
-	public void createXML(String author, String topic, String time, String fileName, String password) throws IOException {
-		File sdCard = Environment.getExternalStorageDirectory();
-		File myDir = new File (sdCard.getAbsolutePath() + "/CQ/");
+	public void createXML(String author, String topic, String time, String fileName, String password, String score) throws IOException {
+		File myDir = new File(Environment.getDataDirectory().getAbsolutePath()+"/data/"+Main.PACKAGE_NAME+"/quiz/");
 		if(!myDir.exists())
-			myDir.mkdir();
-		xmlFile = new File(sdCard.getAbsolutePath() + "/CQ/" + fileName);
+			myDir.mkdirs();
+		xmlFile = new File(Environment.getDataDirectory().getAbsolutePath() +"/data/"+Main.PACKAGE_NAME+"/quiz/" + fileName);
 
 		if(!xmlFile.exists())
 			xmlFile.createNewFile();
@@ -33,10 +34,13 @@ public class CreateQuizXML {
 		serializer.attribute(null, "author", author);
 		serializer.attribute(null, "topic", topic);
 		serializer.attribute(null, "time", time);
-		serializer.attribute(null, "score", "");
+		serializer.attribute(null, "score", score);
 		serializer.attribute(null, "password", password);
 		Calendar calendar = Calendar.getInstance();
-		serializer.attribute(null, "date",""+calendar.get(Calendar.DATE)+"/"+(calendar.get(Calendar.MONTH)+1)+"/"+calendar.get(Calendar.YEAR));
+		if(calendar.get(Calendar.AM_PM) == 0)
+			serializer.attribute(null, "date",String.format("%02d", calendar.get(Calendar.DATE))+"/"+String.format("%02d", calendar.get(Calendar.MONTH)+1)+"/"+calendar.get(Calendar.YEAR) + " - " + String.format("%02d", calendar.get(Calendar.HOUR)) + ":" + String.format("%02d", calendar.get(Calendar.MINUTE)) + " AM");
+		else
+			serializer.attribute(null, "date",String.format("%02d", calendar.get(Calendar.DATE))+"/"+String.format("%02d", calendar.get(Calendar.MONTH)+1)+"/"+calendar.get(Calendar.YEAR) + " - " + String.format("%02d", calendar.get(Calendar.HOUR)) + ":" + String.format("%02d", calendar.get(Calendar.MINUTE)) + " PM");
 	}
 
 	public void startQuestion(String ques) throws IllegalArgumentException, IllegalStateException, IOException {

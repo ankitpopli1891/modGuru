@@ -160,33 +160,62 @@
                     android:paddingTop="20dp" />
             </TableLayout>
 
-            <Button
-                android:id="@+id/button_add_ques"
-                style="@style/button"
+            <RelativeLayout
+                android:id="@+id/actionButtons"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_below="@+id/tableLayout1"
+                android:layout_below="@id/tableLayout1"
+                android:layout_centerHorizontal="true"
                 android:layout_margin="10dp"
-                android:drawableLeft="@drawable/ic_menu_add"
-                android:drawablePadding="20dp"
-                android:gravity="left|center_vertical"
-                android:padding="10dp"
-                android:text="@string/add_ques" />
+                android:background="@drawable/button"
+                android:gravity="center_horizontal" >
 
-            <Button
-                android:id="@+id/button_create_quiz"
-                style="@style/button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/button_add_ques"
-                android:layout_alignRight="@+id/button_add_ques"
-                android:layout_below="@+id/button_add_ques"
-                android:drawableLeft="@drawable/ic_menu_save"
-                android:drawablePadding="20dp"
-                android:gravity="left|center_vertical"
-                android:padding="10dp"
-                android:text="@string/quiz_completed" />
+                <Button
+                    android:id="@+id/button_add_ques"
+                    style="@style/button_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tableLayout1"
+                    android:drawableLeft="@drawable/ic_menu_add"
+                    android:minWidth="48dp"
+                    android:padding="10dp"
+                    android:text="@string/blank" />
+
+                <Button
+                    android:id="@+id/button_create_quiz"
+                    style="@style/button_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@id/button_add_ques"
+                    android:layout_toRightOf="@id/button_add_ques"
+                    android:drawableLeft="@drawable/ic_menu_save"
+                    android:minWidth="48dp"
+                    android:padding="10dp"
+                    android:text="@string/blank" />
+
+                <Button
+                    android:id="@+id/button_clear_fields"
+                    style="@style/button_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@id/button_add_ques"
+                    android:layout_toRightOf="@id/button_create_quiz"
+                    android:drawableLeft="@drawable/ic_menu_cancel"
+                    android:minWidth="48dp"
+                    android:padding="10dp"
+                    android:text="@string/blank" />
+                <Button
+                    android:id="@+id/button_discard_quiz"
+                    style="@style/button_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@id/button_add_ques"
+                    android:layout_toRightOf="@id/button_clear_fields"
+                    android:drawableLeft="@drawable/ic_menu_delete"
+                    android:minWidth="48dp"
+                    android:padding="10dp"
+                    android:text="@string/blank" />
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/textViewQuestions"
@@ -211,7 +240,6 @@
         android:scrollbars="vertical"
         android:visibility="gone"
         tools:ignore="NestedScrolling" >
-
     </ListView>
 
 </RelativeLayout>

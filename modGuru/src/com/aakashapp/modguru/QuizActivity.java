@@ -2,6 +2,7 @@ package com.aakashapp.modguru;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import android.app.Activity;
@@ -36,6 +37,8 @@ import com.aakashapp.modguru.src.Option;
 import com.aakashapp.modguru.src.Parser;
 import com.aakashapp.modguru.src.Question;
 import com.aakashapp.modguru.src.Quiz;
+import com.aakashapp.modguru.src.QuizData;
+import com.aakashapp.modguru.src.RandomArray;
 
 public class QuizActivity extends Activity {
 
@@ -56,13 +59,15 @@ public class QuizActivity extends Activity {
 
 	int totalQuestions, atQues, attemptedQuestions, progress;
 	int min, sec;
-	int result[];
+	int result[], index[];
 	GestureDetector detector;
 
 	SharedPreferences sharedPrefs;
 	boolean submitted, enableSwipe, stayAwake;
 	PowerManager powerManager;
 	PowerManager.WakeLock wakeLock;
+
+	QuizData quizData;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -226,15 +231,18 @@ public class QuizActivity extends Activity {
 		String ans = "";
 		for(int i=0; i<4;i++)
 			if(checkBox[i].isChecked())
-				ans +=i;
-		answers.setAnswer(atQues, ans);
-		if(answers.getAnswer(atQues).equals(correctAnswers[atQues]))
-			result[atQues] = 1;
+				ans += i;
+		answers.setAnswer(index[atQues], ans);
+		if(ans.equals(""))
+			result[index[atQues]] = 0;
+		else if(ans.equals(correctAnswers[index[atQues]]))
+			result[index[atQues]] = 1;
 		else 
-			result[atQues] = 0;
+			result[index[atQues]] = 2;
+
 		attemptedQuestions = 1;
 		for (int i=0; i<totalQuestions; i++) {
-			if(!answers.getAnswer(i).equals(""))
+			if(!answers.getAnswer(index[i]).equals(""))
 				attemptedQuestions++;
 		}
 	}
@@ -243,7 +251,8 @@ public class QuizActivity extends Activity {
 
 		int noca = 0;
 		for(int i:result)
-			noca+=i;
+			if(i==1)
+				noca+=i;
 		for(int i=0 ;i<4;i++) 
 			checkBox[i].setEnabled(false);
 
@@ -262,23 +271,29 @@ public class QuizActivity extends Activity {
 		for (int i=0; i<length; i++) {
 			b[i].setText(String.valueOf(i+1));
 			b[i].setClickable(false);
-			if(result[i]==1) {
+			if(result[index[i]]==1) {
 				b[i].setTextColor(Color.rgb(0, 255, 0));
 				b[i].setBackgroundResource(R.drawable.button_checkbox_correct);
 			}
-			else {
+			else if (result[index[i]]==2) {
 				b[i].setTextColor(Color.rgb(255, 0, 0));
 				b[i].setBackgroundResource(R.drawable.button_checkbox_wrong);
+			}
+			else {
+				b[i].setTextColor(Color.rgb(255, 255, 255));
+				b[i].setBackgroundResource(R.drawable.button_checkbox_unattempted);
 			}
 		}
 
 		if(!submitted) {
 			ExportResult exportResult = new ExportResult(xmlFile, result);
 			try {
+				exportResult.setAnswers(answers);
 				exportResult.export();
 			} catch (Exception e) {
 				Log.e("IO", "Result Export", e);
 			}
+			updateOriginalFile(noca+"/"+totalQuestions);
 		}
 
 		submitted = true;
@@ -288,12 +303,44 @@ public class QuizActivity extends Activity {
 		sec=0;
 		textViewTimer.setText("00:00");
 	}
+
+	private void updateOriginalFile(String score) {
+		quizData = new QuizData();
+		quizData.setMetaData(quiz.getAuthor(), quiz.getTopic(), quiz.getTime(), quiz.getPassword(), score);
+		for(Question q:questions) {
+			quizData.addQuestion(q.getQuestion());
+			Option[] options = q.getOptions();
+			String[] opts = new String[4];
+			String copt = "";
+			for(int i=0;i<4;i++) {
+				opts[i] = options[i].getOptionValue();
+				if(options[i].isOptionCorrectAnswer())
+					copt+= String.valueOf(i);
+			}
+			quizData.addOptions(opts);
+			quizData.setCorrectOpt(copt);
+			quizData.addNote(q.getNote());
+		}
+		try {
+			quizData.writeToXML(xmlFile);
+		} catch (IOException e) {
+			Log.e("Update Score", "Write Fail", e);
+		}
+	}
+
 	private void loadXML() {
-		quiz = parser.extractQuiz();
+		try {
+			quiz = parser.extractQuiz();
+		} catch (Exception e) {
+			Log.e("ParserError", "Can't parse "+ xmlFile);
+			Toast.makeText(QuizActivity.this, "Can't Load Quiz!!", Toast.LENGTH_SHORT).show();
+			QuizActivity.this.finish();
+		} 
 		questions = quiz.getQuestions();
 		totalQuestions = questions.size();
 		answers = new Answers(totalQuestions);
 		result = new int[totalQuestions];
+		index = new RandomArray().getArray(totalQuestions);
 		correctAnswers = new String[totalQuestions];
 		for(int i=0; i<totalQuestions; i++) {
 			correctAnswers[i] = "";
@@ -302,13 +349,34 @@ public class QuizActivity extends Activity {
 				if(opts[j].isOptionCorrectAnswer())
 					correctAnswers[i] +=j;
 		}
+		setTitle(quiz.getTopic()+" - By "+quiz.getAuthor());
+		// TODO
+		String score = quiz.getScore();
+		if(!score.equals("")) {
+			String resultFolder = getIntent().getStringExtra("file");
+			File path=new File(Environment.getDataDirectory()+"/data/"+Main.PACKAGE_NAME+"/res/"+resultFolder);
+			if(path.isDirectory()) {
+				try {
+					Parser p = new Parser(new FileInputStream(path + path.list()[0]));
+					String extractResult = p.extractResult();
+					int length = extractResult.length();
+					for (int i=0; i<length; i++)
+						result[i] = Integer.parseInt(extractResult.substring(i,	i));
+					submitted = true;
+					submitTest();
+				} catch (Exception e) {
+					Log.e("RESULT", "No Result Found", e);
+				}
+			}
+		}
 	}
+
 	private void refreshView() {
-		textViewQuestion.setText(questions.get(atQues).getQuestion());
-		Option[] opts = questions.get(atQues).getOptions();
+		textViewQuestion.setText(questions.get(index[atQues]).getQuestion());
+		Option[] opts = questions.get(index[atQues]).getOptions();
 		for (int i=0;i<4;i++) {
 			checkBox[i].setText(opts[i].getOptionValue());
-			String ans = answers.getAnswer(atQues);
+			String ans = answers.getAnswer(index[atQues]);
 			if(ans.contains(String.valueOf(i)))
 				checkBox[i].setChecked(true);
 			else
@@ -333,7 +401,7 @@ public class QuizActivity extends Activity {
 				buttonLast.setEnabled(true);
 			}
 			for (int i=0; i<totalQuestions; i++) {
-				if(answers.getAnswer(i).equals("")) {
+				if(answers.getAnswer(index[i]).equals("")) {
 					b[i].setBackgroundResource(R.drawable.button_checkbox_unattempted);
 					b[i].setText(String.valueOf(i+1));
 				}
@@ -348,28 +416,34 @@ public class QuizActivity extends Activity {
 		else {
 			textViewExplanation.setText("Correct Answer: ");
 			for(int i=0;i<4;i++)
-				if(correctAnswers[atQues].contains(String.valueOf(i)))
+				if(correctAnswers[index[atQues]].contains(String.valueOf(i)))
 					textViewExplanation.append("("+(char)(65+i)+") ");
-			String note = questions.get(atQues).getNote();
+			String note = questions.get(index[atQues]).getNote();
 			if(!note.equals(""))
 				textViewExplanation.append("\n\nExplanation: "+ note);
 			int length = result.length;
 			for (int i=0; i<length; i++) {
 				b[i].setText(String.valueOf(i+1));
-				if(result[i]==1) {
+				if(result[index[i]]==1) {
 					b[i].setBackgroundResource(R.drawable.button_checkbox_correct);
 				}
-				else {
+				else if(result[index[i]]==2) {
 					b[i].setBackgroundResource(R.drawable.button_checkbox_wrong);
 				}
+				else {
+					b[i].setBackgroundResource(R.drawable.button_checkbox_unattempted);
+				}
 			}
-			if(result[atQues]==1) {
+			if(result[index[atQues]]==1) {
 				b[atQues].setText("");
 				b[atQues].setBackgroundResource(R.drawable.bt_correct);
 			}
-			else {
+			else if(result[index[atQues]]==2) {
 				b[atQues].setText("");
 				b[atQues].setBackgroundResource(R.drawable.bt_wrong);
+			}
+			else if(result[index[atQues]]==0){
+				b[atQues].setBackgroundResource(R.drawable.bt_focused);
 			}
 		}
 		b[atQues].requestFocusFromTouch();
@@ -387,7 +461,7 @@ public class QuizActivity extends Activity {
 		atQues = 0;
 		attemptedQuestions = 1;
 		try {
-			parser = new Parser(new FileInputStream(new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/CQ/" +xmlFile)));
+			parser = new Parser(new FileInputStream(new File(Environment.getDataDirectory()+"/data/"+Main.PACKAGE_NAME+"/quiz/"+xmlFile)));
 		} catch (Exception e) {
 			Log.e("ParserError", e.getMessage());
 		}
@@ -419,7 +493,7 @@ public class QuizActivity extends Activity {
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		answers.setQuesInView(atQues);
+		answers.setQuesInView(index[atQues]);
 		outState.putBoolean("submitted", submitted);
 		outState.putBoolean("enableSwipe", enableSwipe);
 		outState.putSerializable(String.valueOf(answers.getSerialVersionUID()), answers);
@@ -533,6 +607,9 @@ public class QuizActivity extends Activity {
 			});
 			alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int whichButton) {
+					/*
+					 * Do Nothing
+					 */
 				}
 			});
 			alert.show();

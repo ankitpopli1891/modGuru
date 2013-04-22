@@ -2,7 +2,6 @@ package com.aakashapp.modguru;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 import org.achartengine.ChartFactory;
@@ -17,6 +16,9 @@ import org.achartengine.renderer.XYMultipleSeriesRenderer;
 import org.achartengine.renderer.XYSeriesRenderer;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
@@ -71,6 +73,9 @@ public class ResultActivity extends Activity {
 
 			@Override
 			public void onNothingSelected(AdapterView<?> arg0) {
+				/*
+				 * Do Nothing
+				 */
 			}
 		});
 	}
@@ -110,9 +115,9 @@ public class ResultActivity extends Activity {
 	}
 
 	protected GraphicalView getPieChartView(int ques) {
-		String[] code = new String[] { "Correct", "Incorrect" };    	
-		double[] distribution = { (double) (correctQuesCount[ques]*100)/totalResults , (double) (incorrectQuesCount[ques]*100)/totalResults} ;
-		int[] colors = { Color.BLUE, Color.RED };
+		String[] code = new String[] { "Correct", "Incorrect", "Unattempted" };    	
+		double[] distribution = { (double) (correctQuesCount[ques]*100)/totalResults , (double) (incorrectQuesCount[ques]*100)/totalResults, (double) (unattemptedQuesCount[ques]*100)/totalResults} ;
+		int[] colors = { Color.BLUE, Color.RED, Color.LTGRAY };
 
 		CategorySeries distributionSeries = new CategorySeries("Student Performance");
 		for(int i=0 ;i < distribution.length;i++){
@@ -157,16 +162,16 @@ public class ResultActivity extends Activity {
 		textViewResultData.setText("\nNo. of Participants: " +totalResults);
 
 		int totalCorrectAttempts = 0;
-		for (int i=0 ; i<totalResults; i++)
-			for (int j=0; j<totalQuestions;j++)
-				totalCorrectAttempts+=resultSummaryData[i][j];
+		for (int i=0; i<totalQuestions;i++)
+			totalCorrectAttempts+=correctQuesCount[i];
 		textViewResultData.append("\nAverage Score: "+ String.format("%.02f",(float)((totalCorrectAttempts*100)/(totalQuestions*totalResults)))+"%");
 
 		int max = 0, min = totalQuestions;
 		for (int i=0 ; i<totalResults; i++) {
 			int temp = 0;
 			for (int j=0; j<totalQuestions;j++)
-				temp+=resultSummaryData[i][j];
+				if(resultSummaryData[i][j]==1)
+					temp++;
 			if(max<temp)
 				max=temp;
 			if(min>temp)
@@ -226,7 +231,7 @@ public class ResultActivity extends Activity {
 
 		for (int i=0 ; i<totalQuestions; i++) {
 			correctSeries.add(i, correctQuesCount[i]);
-			incorrectSeries.add(i, totalResults);
+			incorrectSeries.add(i, incorrectQuesCount[i]+correctQuesCount[i]);
 		}
 
 		XYMultipleSeriesDataset dataset = new XYMultipleSeriesDataset();
@@ -316,14 +321,15 @@ public class ResultActivity extends Activity {
 
 	private void loadResultData() {
 		String resultFolder = getIntent().getStringExtra("file");
-		File path=new File(Environment.getExternalStorageDirectory()+"/Android/data/"+Main.PACKAGE_NAME+"/"+resultFolder);
+		File path=new File(Environment.getDataDirectory()+"/data/"+Main.PACKAGE_NAME+"/res/"+resultFolder);
 		if(path.isDirectory()) {
 			for(File f: path.listFiles()) {
 				try {
 					Parser p = new Parser(new FileInputStream(f));
 					results.add(p.extractResult());
-				} catch (FileNotFoundException e) {
+				} catch (Exception e) {
 					Log.e("IO", "RESULT",e);
+					Toast.makeText(ResultActivity.this, "One or More Results failed to Load!!", Toast.LENGTH_SHORT).show();
 				}
 			}
 			totalResults = results.size();
@@ -336,16 +342,65 @@ public class ResultActivity extends Activity {
 				for(int j=0;j<totalQuestions;j++) {
 					resultSummaryData[i][j] = Integer.parseInt(String.valueOf(results.get(i).charAt(j)));
 				}
-
 			for (int i=0 ; i<totalQuestions; i++) {
 				correctQuesCount[i]=0;
+				incorrectQuesCount[i]=0;
+				unattemptedQuesCount[i]=0;
 				for (int j=0; j<totalResults;j++)
-					correctQuesCount[i] = correctQuesCount[i] + resultSummaryData[j][i];
-				incorrectQuesCount[i] = totalResults - correctQuesCount[i];
+					switch (resultSummaryData[j][i]) {
+					case 0:		
+						unattemptedQuesCount[i]++;
+						break;
+					case 1:
+						correctQuesCount[i]++;
+						break;
+					default:
+						incorrectQuesCount[i]++;
+						break;
+					}
 			}
+
+			File parentFile = path.getParentFile();
+			String[] list = parentFile.list();
+			for (final String s:list) 
+				if(s.startsWith(path.getName()+"-")) {
+					AlertDialog.Builder alert = new AlertDialog.Builder(this);
+					alert.setTitle("Previous Result Data Available");
+					alert.setMessage("Do you want to see the previous data?");
+
+					alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int whichButton) {
+							Intent i = new Intent(ResultActivity.this,ResultActivity.class);
+							i.putExtra("file", s);
+							startActivity(i);
+						}
+					});
+
+					alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int whichButton) {
+							/*
+							 * Do Nothing
+							 */
+						}
+					});
+					alert.show();
+					break;
+				}
 		}
 		else {
-			Toast.makeText(ResultActivity.this, "No Results Found!!", Toast.LENGTH_SHORT).show();
+			boolean found = false;
+			File parentFile = path.getParentFile();
+			String[] list = parentFile.list();
+			for (String s:list) 
+				if(s.startsWith(path.getName()+"-")) {
+					Intent i = new Intent(ResultActivity.this,ResultActivity.class);
+					i.putExtra("file", s);
+					startActivity(i);
+					found = true;
+					break;
+				}
+			if(!found)
+				Toast.makeText(ResultActivity.this, "No Results Found!!", Toast.LENGTH_SHORT).show();
 			ResultActivity.this.finish();
 		}
 	}

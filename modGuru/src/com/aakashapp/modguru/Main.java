@@ -1,16 +1,13 @@
 package com.aakashapp.modguru;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import android.widget.Toast;
 
 public class Main extends Activity {
 
@@ -58,7 +55,7 @@ public class Main extends Activity {
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.itemHelp:
-			Toast.makeText(this, "Help", Toast.LENGTH_SHORT).show();
+			startActivity(new Intent(Main.this,HelpActivity.class));
 			break;
 		case R.id.itemSettings:
 			startActivity(new Intent(Main.this,ApplicationPreferences.class));
@@ -67,12 +64,5 @@ public class Main extends Activity {
 			break;
 		}
 		return super.onMenuItemSelected(featureId, item);
-	}
-
-	public void showAboutDialog() {
-		AlertDialog.Builder alert = new AlertDialog.Builder(this);
-		alert.setTitle("About " + getResources().getString(R.string.app_name));
-		alert.setView(((LayoutInflater)getSystemService(LAYOUT_INFLATER_SERVICE)).inflate(R.layout.about_app, null));
-		alert.show();
 	}
 }

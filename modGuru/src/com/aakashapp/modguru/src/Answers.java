@@ -34,4 +34,8 @@ public class Answers implements Serializable{
 	public int getQuesInView() {
 		return n;
 	}
+	
+	public int getNoOfAnswers() {
+		return answer.length;
+	}
 }

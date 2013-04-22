@@ -20,11 +20,109 @@ public final class R {
         public static final int selectGraphView=0x7f080000;
     }
     public static final class attr {
+        /** <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int centered=0x7f010001;
+        /**  Color of the filled circle that represents the current page. 
+         <p>Must be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int fillColor=0x7f010005;
+        /**  Color of the filled circles that represents pages. 
+         <p>Must be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int pageColor=0x7f010006;
+        /**  Radius of the circles. This is also the spacing between circles. 
+         <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int radius=0x7f010007;
+        /** <p>Must be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int selectedColor=0x7f010002;
+        /**  Whether or not the selected indicator snaps to the circles. 
+         <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int snap=0x7f010008;
+        /**  Color of the open circles. 
+         <p>Must be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int strokeColor=0x7f010009;
+        /** <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int strokeWidth=0x7f010003;
+        /** <p>Must be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int unselectedColor=0x7f010004;
+        /**  Style of the circle indicator. 
+         <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int vpiCirclePageIndicatorStyle=0x7f010000;
+    }
+    public static final class bool {
+        public static final int default_circle_indicator_centered=0x7f0b0000;
+        public static final int default_circle_indicator_snap=0x7f0b0001;
     }
     public static final class color {
         public static final int black=0x7f0a0000;
         public static final int blue_diff=0x7f0a0003;
         public static final int blue_light=0x7f0a0002;
+        public static final int default_circle_indicator_fill_color=0x7f0a0004;
+        public static final int default_circle_indicator_page_color=0x7f0a0005;
+        public static final int default_circle_indicator_stroke_color=0x7f0a0006;
         public static final int white=0x7f0a0001;
     }
     public static final class dimen {
@@ -36,6 +134,8 @@ public final class R {
          */
         public static final int activity_horizontal_margin=0x7f060000;
         public static final int activity_vertical_margin=0x7f060001;
+        public static final int default_circle_indicator_radius=0x7f060002;
+        public static final int default_circle_indicator_stroke_width=0x7f060003;
     }
     public static final class drawable {
         public static final int bg_dark_gradient=0x7f020000;
@@ -57,137 +157,143 @@ public final class R {
         public static final int button_checkbox_unattempted=0x7f020010;
         public static final int button_checkbox_wrong=0x7f020011;
         public static final int button_delete_ques=0x7f020012;
-        public static final int ic_action_next_dark=0x7f020013;
-        public static final int ic_action_next_light=0x7f020014;
-        public static final int ic_action_prev_light=0x7f020015;
-        public static final int ic_first_light=0x7f020016;
-        public static final int ic_last_light=0x7f020017;
-        public static final int ic_launcher=0x7f020018;
-        public static final int ic_menu_add=0x7f020019;
-        public static final int ic_menu_broadcast=0x7f02001a;
-        public static final int ic_menu_delete=0x7f02001b;
-        public static final int ic_menu_edit=0x7f02001c;
-        public static final int ic_menu_save=0x7f02001d;
-        public static final int ic_menu_start=0x7f02001e;
-        public static final int ic_menu_view_result=0x7f02001f;
-        public static final int modgurutext=0x7f020020;
-        public static final int modgurutext_4=0x7f020021;
+        public static final int help2=0x7f020013;
+        public static final int help3=0x7f020014;
+        public static final int help5=0x7f020015;
+        public static final int help6=0x7f020016;
+        public static final int help7=0x7f020017;
+        public static final int ic_action_next_dark=0x7f020018;
+        public static final int ic_action_next_light=0x7f020019;
+        public static final int ic_action_prev_light=0x7f02001a;
+        public static final int ic_first_light=0x7f02001b;
+        public static final int ic_last_light=0x7f02001c;
+        public static final int ic_launcher=0x7f02001d;
+        public static final int ic_launcher_mg=0x7f02001e;
+        public static final int ic_menu_add=0x7f02001f;
+        public static final int ic_menu_cancel=0x7f020020;
+        public static final int ic_menu_delete=0x7f020021;
+        public static final int ic_menu_edit=0x7f020022;
+        public static final int ic_menu_save=0x7f020023;
+        public static final int ic_menu_start=0x7f020024;
+        public static final int modgurutext=0x7f020025;
+        public static final int xml_format=0x7f020026;
     }
     public static final class id {
-        public static final int ButtonFirst=0x7f0c003d;
-        public static final int ButtonLast=0x7f0c003f;
-        public static final int ButtonNext=0x7f0c0040;
-        public static final int ButtonPrevious=0x7f0c003e;
-        public static final int ButtonSubmit=0x7f0c0041;
-        public static final int TextView01=0x7f0c002f;
-        public static final int TextView02=0x7f0c0032;
-        public static final int TextView03=0x7f0c0035;
-        public static final int buttonCreateNewQuiz=0x7f0c001c;
-        public static final int buttonCreateQuiz=0x7f0c0047;
-        public static final int buttonDeleteQuestion=0x7f0c0057;
-        public static final int buttonOpen=0x7f0c0054;
-        public static final int buttonStartQuiz=0x7f0c001d;
-        public static final int buttonViewAnswers=0x7f0c003b;
-        public static final int button_add_ques=0x7f0c0016;
-        public static final int button_create_quiz=0x7f0c0017;
-        public static final int checkBox01=0x7f0c002d;
-        public static final int checkBox02=0x7f0c0030;
-        public static final int checkBox03=0x7f0c0033;
-        public static final int checkBox04=0x7f0c0036;
-        public static final int checkBox1=0x7f0c000a;
-        public static final int checkBox2=0x7f0c000d;
-        public static final int checkBox3=0x7f0c0010;
-        public static final int checkBox4=0x7f0c0013;
-        public static final int editTextAuthor=0x7f0c0043;
-        public static final int editTextNotes=0x7f0c0015;
-        public static final int editTextOpt1=0x7f0c000b;
-        public static final int editTextOpt2=0x7f0c000e;
-        public static final int editTextOpt3=0x7f0c0011;
-        public static final int editTextOpt4=0x7f0c0014;
-        public static final int editTextPassword=0x7f0c0046;
-        public static final int editTextQues=0x7f0c0007;
-        public static final int editTextTimeLimit=0x7f0c0045;
-        public static final int editTextTopic=0x7f0c0044;
-        public static final int graphView=0x7f0c004a;
-        public static final int helpIndicator=0x7f0c001b;
-        public static final int helpPager=0x7f0c001a;
-        public static final int imageView1=0x7f0c0000;
-        public static final int itemBroadcast=0x7f0c005d;
-        public static final int itemDeleteQuiz=0x7f0c005c;
-        public static final int itemEditQuiz=0x7f0c005b;
-        public static final int itemHelp=0x7f0c0059;
-        public static final int itemResult=0x7f0c005e;
-        public static final int itemSettings=0x7f0c0058;
-        public static final int itemStartQuiz=0x7f0c005a;
-        public static final int linearLayout1=0x7f0c001f;
-        public static final int linearLayoutFlags=0x7f0c0025;
-        public static final int linearLayoutQuizData=0x7f0c0028;
-        public static final int linearLayoutSummary=0x7f0c0038;
-        public static final int listViewQuestions=0x7f0c0019;
-        public static final int listViewQuiz=0x7f0c004b;
-        public static final int masterContainer=0x7f0c001e;
-        public static final int newParentContainer=0x7f0c0005;
-        public static final int parentContainer=0x7f0c0006;
-        public static final int realtiveLayoutBar=0x7f0c0021;
-        public static final int relativeLayout01=0x7f0c0027;
-        public static final int relativeLayoutNavigationButtons=0x7f0c003c;
-        public static final int relativeLayoutSelectView=0x7f0c0048;
-        public static final int scrollView01=0x7f0c0042;
-        public static final int scrollView02=0x7f0c0026;
-        public static final int scrollView1=0x7f0c0024;
-        public static final int spinnerSelect=0x7f0c0049;
-        public static final int tableLayout=0x7f0c002a;
-        public static final int tableLayout1=0x7f0c0008;
-        public static final int tableRow1=0x7f0c0009;
-        public static final int tableRow2=0x7f0c000c;
-        public static final int tableRow3=0x7f0c000f;
-        public static final int tableRow4=0x7f0c0012;
-        public static final int textView2=0x7f0c0039;
-        public static final int textView3=0x7f0c0001;
-        public static final int textView4=0x7f0c0003;
-        public static final int textView8=0x7f0c0002;
-        public static final int textView9=0x7f0c0004;
-        public static final int textViewAtQues=0x7f0c0022;
-        public static final int textViewDate=0x7f0c0055;
-        public static final int textViewExplanation=0x7f0c0037;
-        public static final int textViewInstructions=0x7f0c004f;
-        public static final int textViewLine01=0x7f0c0050;
-        public static final int textViewListQuestion=0x7f0c0020;
-        public static final int textViewPassword=0x7f0c002c;
-        public static final int textViewQuesNo=0x7f0c0056;
-        public static final int textViewQuestion=0x7f0c0029;
-        public static final int textViewQuestions=0x7f0c0018;
-        public static final int textViewScore=0x7f0c0052;
-        public static final int textViewSummary=0x7f0c003a;
-        public static final int textViewTimeLimit=0x7f0c004d;
-        public static final int textViewTimer=0x7f0c0023;
-        public static final int textViewTopic=0x7f0c0051;
-        public static final int textViewTopicCreator=0x7f0c0053;
-        public static final int textViewTotalQues=0x7f0c004e;
-        public static final int tr1=0x7f0c002b;
-        public static final int tr2=0x7f0c002e;
-        public static final int tr3=0x7f0c0031;
-        public static final int tr4=0x7f0c0034;
-        public static final int webView=0x7f0c004c;
+        public static final int ButtonFirst=0x7f0e003b;
+        public static final int ButtonLast=0x7f0e003d;
+        public static final int ButtonNext=0x7f0e003e;
+        public static final int ButtonPrevious=0x7f0e003c;
+        public static final int ButtonSubmit=0x7f0e003f;
+        public static final int TextView01=0x7f0e002d;
+        public static final int TextView02=0x7f0e0030;
+        public static final int TextView03=0x7f0e0033;
+        public static final int actionButtons=0x7f0e0011;
+        public static final int buttonCreateNewQuiz=0x7f0e001a;
+        public static final int buttonCreateQuiz=0x7f0e0045;
+        public static final int buttonDeleteQuestion=0x7f0e0056;
+        public static final int buttonOpen=0x7f0e0053;
+        public static final int buttonStartQuiz=0x7f0e001b;
+        public static final int buttonViewAnswers=0x7f0e0039;
+        public static final int button_add_ques=0x7f0e0012;
+        public static final int button_clear_fields=0x7f0e0014;
+        public static final int button_create_quiz=0x7f0e0013;
+        public static final int button_discard_quiz=0x7f0e0015;
+        public static final int checkBox01=0x7f0e002b;
+        public static final int checkBox02=0x7f0e002e;
+        public static final int checkBox03=0x7f0e0031;
+        public static final int checkBox04=0x7f0e0034;
+        public static final int checkBox1=0x7f0e0005;
+        public static final int checkBox2=0x7f0e0008;
+        public static final int checkBox3=0x7f0e000b;
+        public static final int checkBox4=0x7f0e000e;
+        public static final int editTextAuthor=0x7f0e0041;
+        public static final int editTextNotes=0x7f0e0010;
+        public static final int editTextOpt1=0x7f0e0006;
+        public static final int editTextOpt2=0x7f0e0009;
+        public static final int editTextOpt3=0x7f0e000c;
+        public static final int editTextOpt4=0x7f0e000f;
+        public static final int editTextPassword=0x7f0e0044;
+        public static final int editTextQues=0x7f0e0002;
+        public static final int editTextTimeLimit=0x7f0e0043;
+        public static final int editTextTopic=0x7f0e0042;
+        public static final int graphView=0x7f0e0048;
+        public static final int helpPageIndicator=0x7f0e0019;
+        public static final int helpPager=0x7f0e0018;
+        public static final int imageView1=0x7f0e004a;
+        public static final int itemBroadcast=0x7f0e005c;
+        public static final int itemDeleteQuiz=0x7f0e005b;
+        public static final int itemEditQuiz=0x7f0e005a;
+        public static final int itemHelp=0x7f0e0058;
+        public static final int itemResult=0x7f0e005d;
+        public static final int itemSettings=0x7f0e0057;
+        public static final int itemStartQuiz=0x7f0e0059;
+        public static final int linearLayout1=0x7f0e001d;
+        public static final int linearLayoutFlags=0x7f0e0023;
+        public static final int linearLayoutQuizData=0x7f0e0026;
+        public static final int linearLayoutSummary=0x7f0e0036;
+        public static final int listViewQuestions=0x7f0e0017;
+        public static final int listViewQuiz=0x7f0e0049;
+        public static final int masterContainer=0x7f0e001c;
+        public static final int newParentContainer=0x7f0e0000;
+        public static final int parentContainer=0x7f0e0001;
+        public static final int realtiveLayoutBar=0x7f0e001f;
+        public static final int relativeLayout01=0x7f0e0025;
+        public static final int relativeLayoutNavigationButtons=0x7f0e003a;
+        public static final int relativeLayoutSelectView=0x7f0e0046;
+        public static final int scrollView01=0x7f0e0040;
+        public static final int scrollView02=0x7f0e0024;
+        public static final int scrollView1=0x7f0e0022;
+        public static final int spinnerSelect=0x7f0e0047;
+        public static final int tableLayout=0x7f0e0028;
+        public static final int tableLayout1=0x7f0e0003;
+        public static final int tableRow1=0x7f0e0004;
+        public static final int tableRow2=0x7f0e0007;
+        public static final int tableRow3=0x7f0e000a;
+        public static final int tableRow4=0x7f0e000d;
+        public static final int textView2=0x7f0e0037;
+        public static final int textViewAtQues=0x7f0e0020;
+        public static final int textViewDate=0x7f0e0054;
+        public static final int textViewExplanation=0x7f0e0035;
+        public static final int textViewInstructions=0x7f0e004e;
+        public static final int textViewLine01=0x7f0e004f;
+        public static final int textViewListQuestion=0x7f0e001e;
+        public static final int textViewPassword=0x7f0e002a;
+        public static final int textViewQuesNo=0x7f0e0055;
+        public static final int textViewQuestion=0x7f0e0027;
+        public static final int textViewQuestions=0x7f0e0016;
+        public static final int textViewScore=0x7f0e0051;
+        public static final int textViewSummary=0x7f0e0038;
+        public static final int textViewTimeLimit=0x7f0e004c;
+        public static final int textViewTimer=0x7f0e0021;
+        public static final int textViewTopic=0x7f0e0050;
+        public static final int textViewTopicCreator=0x7f0e0052;
+        public static final int textViewTotalQues=0x7f0e004d;
+        public static final int tr1=0x7f0e0029;
+        public static final int tr2=0x7f0e002c;
+        public static final int tr3=0x7f0e002f;
+        public static final int tr4=0x7f0e0032;
+        public static final int webView=0x7f0e004b;
+    }
+    public static final class integer {
+        public static final int default_circle_indicator_orientation=0x7f0c0000;
     }
     public static final class layout {
-        public static final int about_app=0x7f030000;
-        public static final int activity_create_quiz=0x7f030001;
-        public static final int activity_help=0x7f030002;
-        public static final int activity_main=0x7f030003;
-        public static final int activity_quiz=0x7f030004;
-        public static final int activity_quiz_meta_data=0x7f030005;
-        public static final int activity_result=0x7f030006;
-        public static final int activity_select_quiz=0x7f030007;
-        public static final int activity_splash_screen=0x7f030008;
-        public static final int activity_web_view=0x7f030009;
-        public static final int dialog_start_quiz_message=0x7f03000a;
-        public static final int list_layout=0x7f03000b;
-        public static final int ques_list_layout=0x7f03000c;
+        public static final int activity_create_quiz=0x7f030000;
+        public static final int activity_help=0x7f030001;
+        public static final int activity_main=0x7f030002;
+        public static final int activity_quiz=0x7f030003;
+        public static final int activity_quiz_meta_data=0x7f030004;
+        public static final int activity_result=0x7f030005;
+        public static final int activity_select_quiz=0x7f030006;
+        public static final int activity_splash_screen=0x7f030007;
+        public static final int activity_web_view=0x7f030008;
+        public static final int dialog_start_quiz_message=0x7f030009;
+        public static final int list_layout=0x7f03000a;
+        public static final int ques_list_layout=0x7f03000b;
     }
     public static final class menu {
-        public static final int main_menu=0x7f0b0000;
-        public static final int quiz_list_context_menu=0x7f0b0001;
+        public static final int main_menu=0x7f0d0000;
+        public static final int quiz_list_context_menu=0x7f0d0001;
     }
     public static final class string {
         public static final int a=0x7f07000f;
@@ -229,11 +335,14 @@ public final class R {
         Base application theme, dependent on API level. This theme is replaced
         by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
 
+
+
     
 
             Theme customizations available in newer API levels can go in
             res/values-vXX/styles.xml, while customizations related to
             backward-compatibility can go here.
+
 
         
 
@@ -255,11 +364,203 @@ public final class R {
  All customizations that are NOT specific to a particular API-level can go here. 
          */
         public static final int AppTheme=0x7f090001;
-        public static final int CustomTheme=0x7f090004;
         public static final int button=0x7f090002;
         public static final int button_image=0x7f090003;
     }
     public static final class xml {
         public static final int preferences=0x7f050000;
     }
+    public static final class styleable {
+        /** Attributes that can be used with a PageIndicator.
+           <p>Includes the following attributes:</p>
+           <table>
+           <colgroup align="left" />
+           <colgroup align="left" />
+           <tr><th>Attribute</th><th>Description</th></tr>
+           <tr><td><code>{@link #PageIndicator_android_background com.aakashapp.modguru:android_background}</code></td><td> View background </td></tr>
+           <tr><td><code>{@link #PageIndicator_android_orientation com.aakashapp.modguru:android_orientation}</code></td><td> Orientation of the indicator.</td></tr>
+           <tr><td><code>{@link #PageIndicator_centered com.aakashapp.modguru:centered}</code></td><td> Whether or not the indicators should be centered.</td></tr>
+           <tr><td><code>{@link #PageIndicator_fillColor com.aakashapp.modguru:fillColor}</code></td><td> Color of the filled circle that represents the current page.</td></tr>
+           <tr><td><code>{@link #PageIndicator_pageColor com.aakashapp.modguru:pageColor}</code></td><td> Color of the filled circles that represents pages.</td></tr>
+           <tr><td><code>{@link #PageIndicator_radius com.aakashapp.modguru:radius}</code></td><td> Radius of the circles.</td></tr>
+           <tr><td><code>{@link #PageIndicator_snap com.aakashapp.modguru:snap}</code></td><td> Whether or not the selected indicator snaps to the circles.</td></tr>
+           <tr><td><code>{@link #PageIndicator_strokeColor com.aakashapp.modguru:strokeColor}</code></td><td> Color of the open circles.</td></tr>
+           <tr><td><code>{@link #PageIndicator_strokeWidth com.aakashapp.modguru:strokeWidth}</code></td><td> Width of the stroke used to draw the circles.</td></tr>
+           </table>
+           @see #PageIndicator_android_background
+           @see #PageIndicator_android_orientation
+           @see #PageIndicator_centered
+           @see #PageIndicator_fillColor
+           @see #PageIndicator_pageColor
+           @see #PageIndicator_radius
+           @see #PageIndicator_snap
+           @see #PageIndicator_strokeColor
+           @see #PageIndicator_strokeWidth
+         */
+        public static final int[] PageIndicator = {
+            0x010100c4, 0x010100d4, 0x7f010001, 0x7f010003,
+            0x7f010005, 0x7f010006, 0x7f010007, 0x7f010008,
+            0x7f010009
+        };
+        /**
+          <p>
+          @attr description
+           View background 
+          <p>This corresponds to the global attribute          resource symbol {@link com.aakashapp.modguru.R.attr#android_background}.
+          @attr name android:android_background
+        */
+        public static final int PageIndicator_android_background = 1;
+        /**
+          <p>
+          @attr description
+           Orientation of the indicator. 
+          <p>This corresponds to the global attribute          resource symbol {@link com.aakashapp.modguru.R.attr#android_orientation}.
+          @attr name android:android_orientation
+        */
+        public static final int PageIndicator_android_orientation = 0;
+        /**
+          <p>
+          @attr description
+           Whether or not the indicators should be centered. 
+
+
+          <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          <p>This is a private symbol.
+          @attr name android:centered
+        */
+        public static final int PageIndicator_centered = 2;
+        /**
+          <p>
+          @attr description
+           Color of the filled circle that represents the current page. 
+
+
+          <p>Must be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          <p>This is a private symbol.
+          @attr name android:fillColor
+        */
+        public static final int PageIndicator_fillColor = 4;
+        /**
+          <p>
+          @attr description
+           Color of the filled circles that represents pages. 
+
+
+          <p>Must be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          <p>This is a private symbol.
+          @attr name android:pageColor
+        */
+        public static final int PageIndicator_pageColor = 5;
+        /**
+          <p>
+          @attr description
+           Radius of the circles. This is also the spacing between circles. 
+
+
+          <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          <p>This is a private symbol.
+          @attr name android:radius
+        */
+        public static final int PageIndicator_radius = 6;
+        /**
+          <p>
+          @attr description
+           Whether or not the selected indicator snaps to the circles. 
+
+
+          <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          <p>This is a private symbol.
+          @attr name android:snap
+        */
+        public static final int PageIndicator_snap = 7;
+        /**
+          <p>
+          @attr description
+           Color of the open circles. 
+
+
+          <p>Must be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          <p>This is a private symbol.
+          @attr name android:strokeColor
+        */
+        public static final int PageIndicator_strokeColor = 8;
+        /**
+          <p>
+          @attr description
+           Width of the stroke used to draw the circles. 
+
+
+          <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          <p>This is a private symbol.
+          @attr name android:strokeWidth
+        */
+        public static final int PageIndicator_strokeWidth = 3;
+        /** Attributes that can be used with a ViewPagerIndicator.
+           <p>Includes the following attributes:</p>
+           <table>
+           <colgroup align="left" />
+           <colgroup align="left" />
+           <tr><th>Attribute</th><th>Description</th></tr>
+           <tr><td><code>{@link #ViewPagerIndicator_vpiCirclePageIndicatorStyle com.aakashapp.modguru:vpiCirclePageIndicatorStyle}</code></td><td> Style of the circle indicator.</td></tr>
+           </table>
+           @see #ViewPagerIndicator_vpiCirclePageIndicatorStyle
+         */
+        public static final int[] ViewPagerIndicator = {
+            0x7f010000
+        };
+        /**
+          <p>
+          @attr description
+           Style of the circle indicator. 
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          <p>This is a private symbol.
+          @attr name android:vpiCirclePageIndicatorStyle
+        */
+        public static final int ViewPagerIndicator_vpiCirclePageIndicatorStyle = 0;
+    };
 }

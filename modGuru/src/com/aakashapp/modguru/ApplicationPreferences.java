@@ -1,22 +1,32 @@
 package com.aakashapp.modguru;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.util.Log;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.aakashapp.modguru.src.ImportFile;
 
 public class ApplicationPreferences extends PreferenceActivity {
 
 	SharedPreferences preferences;
 	SharedPreferences.Editor editor;
-
+	public static final int ACTIVITY_CHOOSE_FILE = 1;
 	@SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -105,5 +115,77 @@ public class ApplicationPreferences extends PreferenceActivity {
 				return false;
 			}
 		});
+		/**
+		 * Advanced Settings
+		 */
+		((Preference) findPreference("advanced_import")).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
+				AlertDialog.Builder alert = new AlertDialog.Builder(ApplicationPreferences.this);
+				alert.setTitle("Quiz File Format");
+
+				String text = "";
+				try {
+					InputStream inputStream = getAssets().open("sample");
+					BufferedInputStream stream = new BufferedInputStream(inputStream);
+					int ch;
+					while ((ch = stream.read()) != -1) {
+						text += (char)ch;
+					}
+				}catch (Exception e) {
+					text = "Can't Load Sample File!!";
+				}
+
+				TextView textView = new TextView(getApplicationContext());
+				textView.setText(text);
+				textView.setTextColor(Color.BLACK);
+				textView.setPadding(10, 10, 10, 10);
+				alert.setView(textView);
+
+				alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						Intent chooseFile;
+						Intent intent;
+						chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
+						chooseFile.setType("file/*");
+						intent = Intent.createChooser(chooseFile, "Import File");
+						startActivityForResult(intent, ACTIVITY_CHOOSE_FILE);
+					}
+				});
+				alert.show();
+				return false;
+			}
+		});
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if (requestCode==ACTIVITY_CHOOSE_FILE) {
+			if (resultCode == Activity.RESULT_OK) {
+				try {
+					ImportFile.importFile(data.getData().getPath());
+					Toast.makeText(getApplicationContext(), "Import Successful!!", Toast.LENGTH_SHORT).show();
+				} catch (IOException e) {
+					Toast.makeText(getApplicationContext(), "Read/Write Permission Denied!!", Toast.LENGTH_SHORT).show();
+					Log.e("modGuru - import", e.getMessage(), e);
+				} catch (Exception e) {
+					AlertDialog.Builder alert = new AlertDialog.Builder(ApplicationPreferences.this);
+					alert.setTitle("Syntax Error");
+					alert.setMessage("Selected File Doesn't seem to be a Valid Quiz File.");
+					alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							/*
+							 * Do Nothing
+							 */
+						}
+					});
+					alert.show();
+					Log.e("modGuru - import", e.getMessage());
+				}
+			}
+		}
 	}
 }

@@ -20,19 +20,14 @@
             android:name="com.aakashapp.modguru.SplashScreen"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name="com.aakashapp.modguru.Main"
             android:screenOrientation="portrait" >
             <intent-filter>
-                <action android:name="com.aakashapp.modguru.Main" />
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
@@ -61,6 +56,10 @@
         </activity>
         <activity
             android:name="com.aakashapp.modguru.WebViewActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.aakashapp.modguru.HelpActivity"
             android:screenOrientation="portrait" >
         </activity>
     </application>

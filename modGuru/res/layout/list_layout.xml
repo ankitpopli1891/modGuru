@@ -57,10 +57,9 @@
         android:layout_toLeftOf="@+id/buttonOpen"
         android:focusable="false"
         android:focusableInTouchMode="false"
-        android:padding="10dp"
+        android:gravity="center"
         android:text="@string/blank"
-        android:textSize="24sp"
-        android:textStyle="bold"
+        android:textSize="16sp"
         android:visibility="visible" />
 
     <TextView

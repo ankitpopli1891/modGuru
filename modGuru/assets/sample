@@ -1,0 +1,21 @@
+The Quiz File should have the Following Format :-
+
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<quiz author="Author" topic="Sample Quiz 1" time="10" score="" password="q" date="20/4/2013">
+  <question>
+    <ques>What is the synonym for odious?</ques>
+    <option>practical</option>
+    <option>omnipresent</option>
+    <option correct="true">dislikable</option>
+    <option>tearful</option>
+    <note></note>
+  </question>
+  <question>
+    <ques>One third of a number is four times 11. what is half of that number?</ques>
+    <option correct="true">66</option>
+    <option>33</option>
+    <option>11</option>
+    <option>22</option>
+    <note>66 is the answer. </note>
+  </question>
+</quiz>

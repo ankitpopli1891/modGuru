@@ -34,13 +34,13 @@ import com.aakashapp.modguru.src.Quiz;
 public class SelectQuizActivity extends Activity {
 
 	ArrayList<HashMap<String, String>> listView;
-	String file, password, timeLimit, author, topic, totalQues;
+	String file, password, timeLimit, author, topic, totalQues, score;
 	int listSize;
 	Parser parser;
 	ListView listViewQuizList;
 	SimpleAdapter adapter;
 	HashMap<String, String> listValues;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -48,20 +48,24 @@ public class SelectQuizActivity extends Activity {
 
 		listView = new ArrayList<HashMap<String,String>>();
 
-		String s =Environment.getExternalStorageDirectory().getAbsolutePath();
-		File f = new File(s+"/CQ/");
-
+		File f = new File(Environment.getDataDirectory().getAbsolutePath()+"/data/"+Main.PACKAGE_NAME+"/quiz/");
 		if(f.isDirectory() && f.exists()) {
 			String[] list = f.list();
 			listSize = list.length;
-			
+
 			for(int i=0;i<list.length;i++) {
 				try {
-					parser = new Parser(new FileInputStream(new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/CQ/" +list[i])));
+					parser = new Parser(new FileInputStream(new File(Environment.getDataDirectory().getAbsolutePath() + "/data/" + Main.PACKAGE_NAME + "/quiz/" + list[i])));
 				} catch (Exception e) {
 					Log.e("ParserError", e.getMessage());
 				}
-				Quiz quiz = parser.extractQuiz();
+				Quiz quiz = null;
+				try {
+					quiz = parser.extractQuiz();
+				} catch (Exception e) {
+					Log.e("ParserError", "Can't parse "+ list[i]);
+					continue;
+				} 
 				listValues = new HashMap<String, String>();
 				listValues.put("topic", quiz.getTopic());
 				listValues.put("author", "By "+quiz.getAuthor());
@@ -72,6 +76,10 @@ public class SelectQuizActivity extends Activity {
 				listValues.put("file", list[i]);
 				listValues.put("totalQues", String.valueOf(quiz.getQuestions().size()));
 				listView.add(listValues);
+			}
+			if(listView.size()<1) {
+				Toast.makeText(SelectQuizActivity.this, "No Quiz Found!!", Toast.LENGTH_LONG).show();
+				SelectQuizActivity.this.finish();
 			}
 		}
 		else {
@@ -90,6 +98,7 @@ public class SelectQuizActivity extends Activity {
 				file = listView.get(arg2).get("file");
 				timeLimit = listView.get(arg2).get("time");
 				totalQues = listView.get(arg2).get("totalQues");
+				score = listView.get(arg2).get("score");
 				startQuiz();
 			}
 		});
@@ -114,7 +123,8 @@ public class SelectQuizActivity extends Activity {
 		author = listView.get((int) menuInfo.id).get("author").substring(3);
 		topic = listView.get((int) menuInfo.id).get("topic");
 		totalQues = listView.get((int) menuInfo.id).get("totalQues");
-		
+		score = listView.get((int) menuInfo.id).get("score");
+
 		switch (item.getItemId()) {
 
 		case R.id.itemStartQuiz:
@@ -141,34 +151,66 @@ public class SelectQuizActivity extends Activity {
 		return super.onContextItemSelected(item);
 	}
 
-
 	private void startQuiz() {
-		AlertDialog.Builder alert = new AlertDialog.Builder(this);
-		alert.setTitle("Start Quiz");
-		View view = ((LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.dialog_start_quiz_message, null);
-		((TextView)view.findViewById(R.id.textViewTotalQues)).setText("No. of Questions: " + totalQues);
-		((TextView)view.findViewById(R.id.textViewTimeLimit)).setText("Time Limit: " + timeLimit + " Minutes");
-		((TextView)view.findViewById(R.id.textViewInstructions)).setText("Instructions:" +
-				"\n1. Once you start the quiz, it will be marked as attempted, whether you complete it or not!" +
-				"\n2. When the Time Limit is over, your answers will be automatically submitted!!" +
-				"\n3. There's no negative marking.");
-		((TextView)view.findViewById(R.id.textViewLine01)).setText("Are you sure you want to Start the Quiz?");
-		alert.setView(view);
-		
-		alert.setPositiveButton("Yes, Go Ahead!!", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int whichButton) {
-				Intent i = new Intent(SelectQuizActivity.this, QuizActivity.class);
-				i.putExtra("file", file);
-				i.putExtra("time", timeLimit);
-				startActivity(i);
-			}
-		});
+		if (score.equals("")) {
+			AlertDialog.Builder alert = new AlertDialog.Builder(this);
+			alert.setTitle("Start Quiz");
+			View view = ((LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.dialog_start_quiz_message, null);
+			((TextView)view.findViewById(R.id.textViewTotalQues)).setText("No. of Questions: " + totalQues);
+			((TextView)view.findViewById(R.id.textViewTimeLimit)).setText("Time Limit: " + timeLimit + " Minutes");
+			((TextView)view.findViewById(R.id.textViewInstructions)).setText("Instructions:" +
+					"\n1. Once you start the quiz, it will be marked as attempted, whether you complete it or not!" +
+					"\n2. When the Time Limit is over, your answers will be automatically submitted!!" +
+			"\n3. There's no negative marking.");
+			((TextView)view.findViewById(R.id.textViewLine01)).setText("Are you sure you want to Start the Quiz?");
+			alert.setView(view);
 
-		alert.setNegativeButton("No, Go Back!!", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int whichButton) {
-			}
-		});
-		alert.show();
+			alert.setPositiveButton("Yes, Go Ahead!!", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int whichButton) {
+					Intent i = new Intent(SelectQuizActivity.this, QuizActivity.class);
+					i.putExtra("file", file);
+					i.putExtra("time", timeLimit);
+					startActivity(i);
+					SelectQuizActivity.this.finish();
+				}
+			});
+
+			alert.setNegativeButton("No, Go Back!!", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int whichButton) {
+					/*
+					 * Do Nothing
+					 */
+				}
+			});
+			alert.show();
+		}
+		else {
+			AlertDialog.Builder alert = new AlertDialog.Builder(this);
+			alert.setTitle("View Result");
+			View view = ((LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.dialog_start_quiz_message, null);
+			((TextView)view.findViewById(R.id.textViewInstructions)).setText("You Have already attempted the Quiz!!");
+			((TextView)view.findViewById(R.id.textViewLine01)).setText("Do You Want to have a look at Your Previous Result ?");
+			alert.setView(view);
+
+			alert.setPositiveButton("Yes, Go Ahead!!", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int whichButton) {
+					Intent i = new Intent(SelectQuizActivity.this, QuizActivity.class);
+					i.putExtra("file", file);
+					i.putExtra("time", timeLimit);
+					startActivity(i);
+					SelectQuizActivity.this.finish();
+				}
+			});
+
+			alert.setNegativeButton("No, Go Back!!", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int whichButton) {
+					/*
+					 * Do Nothing
+					 */
+				}
+			});
+			alert.show();
+		}
 	}
 
 	private void deleteQuiz() {
@@ -184,8 +226,8 @@ public class SelectQuizActivity extends Activity {
 		alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
 				if(isPasswordCorrect(input.getText().toString())) {
-					
-					File f = new File(Environment.getExternalStorageDirectory()+"/CQ/"+file);
+
+					File f = new File(Environment.getDataDirectory().getAbsolutePath()+"/data/"+Main.PACKAGE_NAME+"/quiz/"+file);
 					if(f.exists()) {
 						boolean delete = f.delete();
 						if(delete) {
@@ -196,7 +238,7 @@ public class SelectQuizActivity extends Activity {
 							Toast.makeText(SelectQuizActivity.this, "Insufficient Permissions to perform this Action!!", Toast.LENGTH_SHORT).show();
 					}
 					else
-						Toast.makeText(SelectQuizActivity.this, "File Not Found!!\n"+f.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+						Toast.makeText(SelectQuizActivity.this, "File Not Found!!", Toast.LENGTH_SHORT).show();
 				}
 				else
 					Toast.makeText(SelectQuizActivity.this, "Incorrect Password!!", Toast.LENGTH_SHORT).show();
@@ -205,6 +247,9 @@ public class SelectQuizActivity extends Activity {
 
 		alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
+				/*
+				 * Do Nothing
+				 */
 			}
 		});
 		alert.show();
@@ -238,7 +283,9 @@ public class SelectQuizActivity extends Activity {
 
 		alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
-
+				/*
+				 * Do Nothing
+				 */
 			}
 		});
 		alert.show();
@@ -275,11 +322,14 @@ public class SelectQuizActivity extends Activity {
 
 		alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
+				/*
+				 * Do Nothing
+				 */
 			}
 		});
 		alert.show();
 	}
-	
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);

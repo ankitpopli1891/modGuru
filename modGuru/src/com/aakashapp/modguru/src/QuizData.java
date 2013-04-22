@@ -11,7 +11,7 @@ public class QuizData implements Serializable{
 	private ArrayList<String[]> options;
 	private ArrayList<String> correctOpt;
 	private ArrayList<String> notes;
-	private String author, topic, time, password;
+	private String author, topic, time, password, score;
 
 	public QuizData() {
 		questions = new ArrayList<String>();
@@ -20,11 +20,12 @@ public class QuizData implements Serializable{
 		notes = new ArrayList<String>();
 	}
 
-	public void setMetaData(String author, String topic, String time, String password) {
+	public void setMetaData(String author, String topic, String time, String password, String score) {
 		this.author = author;
 		this.topic = topic;
 		this.time = time;
 		this.password = password;
+		this.score = score;
 	}
 	
 	public void addQuestion(String question) {
@@ -92,7 +93,7 @@ public class QuizData implements Serializable{
 
 	public void writeToXML(String xmlFile) throws IOException {
 		CreateQuizXML quizXML = new CreateQuizXML();
-		quizXML.createXML(author, topic, time, xmlFile, password);
+		quizXML.createXML(author, topic, time, xmlFile, password, score);
 		int noOfQuestions = questions.size();
 		for (int i = 0; i<noOfQuestions; i++) {
 			quizXML.startQuestion(questions.get(i));

@@ -34,7 +34,7 @@ public class CreateQuizActivity extends Activity {
 
 	EditText editTextQuestion, editTextOpt[], editTextNotes;
 	CheckBox checkBox[];
-	Button b_add_ques, b_create_quiz;
+	Button b_add_ques, b_create_quiz, b_clear_fields, b_discard_quiz;
 	public QuizData quizData;
 	ListView listViewQuestions;
 	GestureDetector detector;
@@ -55,7 +55,7 @@ public class CreateQuizActivity extends Activity {
 		try {
 			file = getIntent().getCharSequenceExtra("file").toString();
 			newQuiz = false;
-		}catch (Exception e) {
+		} catch (Exception e) {
 			newQuiz = true;
 		}
 
@@ -76,8 +76,6 @@ public class CreateQuizActivity extends Activity {
 					else {
 						writeQuizFile();
 					}
-					CreateQuizActivity.this.setResult(Activity.RESULT_OK);
-					CreateQuizActivity.this.finish();
 				}
 				else {
 					AlertDialog.Builder alert = new AlertDialog.Builder(CreateQuizActivity.this);
@@ -89,8 +87,6 @@ public class CreateQuizActivity extends Activity {
 							if(isQuestionDataValid()) {
 								addQuestion();
 								writeQuizFile();
-								CreateQuizActivity.this.setResult(Activity.RESULT_OK);
-								CreateQuizActivity.this.finish();
 							}
 						}
 					});
@@ -100,8 +96,6 @@ public class CreateQuizActivity extends Activity {
 							if (quizData.getQuestions().size() == 0)
 								Toast.makeText(CreateQuizActivity.this, "No Questions Added!!\nQuiz can't be Created!!", Toast.LENGTH_LONG).show();
 							writeQuizFile();
-							CreateQuizActivity.this.setResult(Activity.RESULT_OK);
-							CreateQuizActivity.this.finish();
 						}
 					});
 					alert.show();
@@ -112,6 +106,44 @@ public class CreateQuizActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				addQuestion();
+			}
+		});
+		b_clear_fields.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				clearForm();
+			}
+		});
+		b_discard_quiz.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if(listQuestions.size()>0) {
+					AlertDialog.Builder alert = new AlertDialog.Builder(CreateQuizActivity.this);
+					alert.setTitle("Discard Quiz");
+					alert.setMessage("Are you sure you want to Discard the Quiz?");
+					alert.setPositiveButton("Discard & Exit", new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							if(isQuestionDataValid()) {
+								CreateQuizActivity.this.setResult(Activity.RESULT_OK);
+								CreateQuizActivity.this.finish();
+							}
+						}
+					});
+					alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							/*
+							 * Do Nothing
+							 */
+						}
+					});
+					alert.show();
+				}
+				else {
+					CreateQuizActivity.this.setResult(Activity.RESULT_OK);
+					CreateQuizActivity.this.finish();
+				}
 			}
 		});
 		listViewQuestions.setItemsCanFocus(true);
@@ -144,14 +176,48 @@ public class CreateQuizActivity extends Activity {
 
 	protected void writeQuizFile() {
 		try {
-			String file;
-			if(newQuiz)
-				file = String.valueOf(System.currentTimeMillis());
-			else
-				file = this.file;
-			quizData.writeToXML(file);
+			if(newQuiz) {
+				quizData.writeToXML(String.valueOf(System.currentTimeMillis()));
+				CreateQuizActivity.this.setResult(Activity.RESULT_OK);
+				CreateQuizActivity.this.finish();
+			}
+			else {
+				AlertDialog.Builder alert = new AlertDialog.Builder(CreateQuizActivity.this);
+				alert.setTitle(topic+" - By "+author);
+				alert.setMessage("Do You Want to Create a New Quiz or Modify Existing One?");
+				alert.setPositiveButton("Create New", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						try {
+							quizData.writeToXML(String.valueOf(System.currentTimeMillis()));
+							CreateQuizActivity.this.setResult(Activity.RESULT_OK);
+							CreateQuizActivity.this.finish();
+						} catch (Exception e) {
+							Log.e("WriteFail", e.getMessage(), e);
+						}
+					}
+				});
+				alert.setNegativeButton("Modify Existing", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						try {
+							File oldResFolder = new File(Environment.getDataDirectory().getAbsolutePath()+"/data/"+Main.PACKAGE_NAME+"/res/"+file);
+							File newResFolder = new File(Environment.getDataDirectory().getAbsolutePath()+"/data/"+Main.PACKAGE_NAME+"/res/"+file+"-"+System.currentTimeMillis());
+							if(oldResFolder.isDirectory())
+								oldResFolder.renameTo(newResFolder);
+							
+							quizData.writeToXML(CreateQuizActivity.this.file);
+							CreateQuizActivity.this.setResult(Activity.RESULT_OK);
+							CreateQuizActivity.this.finish();
+						} catch (Exception e) {
+							Log.e("WriteFail", e.getMessage(), e);
+						}
+					}
+				});
+				alert.show();
+			}
 		} catch (Exception e) {
-			Log.e("WriteFail", e.getMessage());
+			Log.e("WriteFail", e.getMessage(), e);
 		}
 	}
 
@@ -205,7 +271,6 @@ public class CreateQuizActivity extends Activity {
 				checkBox[i].setChecked(false);
 		}
 		editTextNotes.setText(quizData.getNote(atQues));
-
 	}
 
 	protected boolean isQuestionDataValid() {
@@ -257,9 +322,11 @@ public class CreateQuizActivity extends Activity {
 		checkBox[3] = (CheckBox) findViewById(R.id.checkBox4);
 		b_add_ques = (Button) findViewById(R.id.button_add_ques);
 		b_create_quiz = (Button) findViewById(R.id.button_create_quiz);
+		b_clear_fields = (Button) findViewById(R.id.button_clear_fields);
+		b_discard_quiz = (Button) findViewById(R.id.button_discard_quiz);
 
 		quizData = new QuizData();
-		quizData.setMetaData(author, topic, timer, password);
+		quizData.setMetaData(author, topic, timer, password, "");
 
 		listViewQuestions = (ListView) findViewById(R.id.listViewQuestions);
 		listQuestions = new ArrayList<HashMap<String,String>>();
@@ -271,11 +338,18 @@ public class CreateQuizActivity extends Activity {
 		if(!newQuiz) {
 			Parser parser = null;
 			try {
-				parser = new Parser(new FileInputStream(new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/CQ/" +file)));
+				parser = new Parser(new FileInputStream(new File(Environment.getDataDirectory().getAbsolutePath()+"/data/"+Main.PACKAGE_NAME+"/quiz/"+file)));
 			} catch (Exception e) {
 				Log.e("ParserError", e.getMessage());
 			}
-			Quiz quiz = parser.extractQuiz();
+			Quiz quiz = null;
+			try {
+				quiz = parser.extractQuiz();
+			} catch (Exception e) {
+				Log.e("ParserError", "Can't parse "+ file);
+				Toast.makeText(CreateQuizActivity.this, "Can't Open File for Editing!!", Toast.LENGTH_SHORT).show();
+				CreateQuizActivity.this.finish();
+			} 
 			ArrayList<Question> questions = quiz.getQuestions();
 			for(Question q:questions) {
 				quizData.addQuestion(q.getQuestion());
@@ -382,8 +456,36 @@ public class CreateQuizActivity extends Activity {
 			listViewQuestions.setAnimation(AnimationUtils.loadAnimation(CreateQuizActivity.this, R.anim.to_right));
 			listViewQuestions.setVisibility(View.GONE);
 		}
-		else
-			super.onBackPressed();
+		else {
+			if(listQuestions.size()>0) {
+				AlertDialog.Builder alert = new AlertDialog.Builder(CreateQuizActivity.this);
+				alert.setTitle(topic+" - By "+author);
+				alert.setMessage("The Quiz has not been saved!!");
+				alert.setPositiveButton("Save & Exit", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						writeQuizFile();
+					}
+				});
+				alert.setNegativeButton("Discard Quiz", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						CreateQuizActivity.this.setResult(Activity.RESULT_OK);
+						CreateQuizActivity.this.finish();
+					}
+				});
+				alert.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						/*
+						 * Do Nothing
+						 */
+					}
+				});
+				alert.show();
+			}
+			else
+				super.onBackPressed();	
+		}
 	}
 }
-
