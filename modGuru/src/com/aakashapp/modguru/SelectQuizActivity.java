@@ -78,7 +78,7 @@ public class SelectQuizActivity extends Activity {
 				listValues.put("file", list[i]);
 				String quesCount = quiz.getQuesCount();
 				int totalQues = quiz.getQuestions().size();
-				if(quesCount==null || totalQues<Integer.parseInt(quesCount))
+				if(quesCount==null || quesCount.equals("") || totalQues<Integer.parseInt(quesCount))
 					listValues.put("totalQues", String.valueOf(totalQues));
 				else
 					listValues.put("totalQues", quesCount);
@@ -189,7 +189,7 @@ public class SelectQuizActivity extends Activity {
 								modifyQuizXML.setAttribute("quiz", "quesCount", "");
 								modifyQuizXML.saveQuizFile();
 							} catch (Exception e) {
-								Log.e("Broadcast", e.getMessage(),e);
+								Log.e("Broadcast", e.getMessage(), e);
 							}
 						}
 					});
@@ -203,7 +203,7 @@ public class SelectQuizActivity extends Activity {
 								modifyQuizXML.setAttribute("quiz", "score", "");
 								modifyQuizXML.saveQuizFile();
 							} catch (Exception e) {
-								Log.e("Broadcast", e.getMessage(),e);
+								Log.e("Broadcast", e.getMessage(), e);
 							}
 						}
 					});
@@ -413,13 +413,13 @@ public class SelectQuizActivity extends Activity {
 			if (resultCode == Activity.RESULT_OK)
 				finish();
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.list_menu, menu);
 		return true;
 	}
-	
+
 	@Override
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
 		switch (item.getItemId()) {
