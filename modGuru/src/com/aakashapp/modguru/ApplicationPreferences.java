@@ -14,9 +14,11 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
+import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.util.Log;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -61,6 +63,29 @@ public class ApplicationPreferences extends PreferenceActivity {
 		/**
 		 * General Settings
 		 */
+		((EditTextPreference) findPreference("general_participant_id")).setSummary(preferences.getString("general_participant_id", "Anonymous"));
+		
+		final EditText editTextDeviceName = ((EditTextPreference) findPreference("general_participant_id")).getEditText();
+		editTextDeviceName.setSingleLine();
+		((EditTextPreference) findPreference("general_participant_id")).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
+				editTextDeviceName.setText(preferences.getString("general_participant_id", "Anonymous"));
+				return false;
+			}
+		});
+		((EditTextPreference) findPreference("general_participant_id")).setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+			@Override
+			public boolean onPreferenceChange(Preference preference, Object newValue) {
+				editor = preferences.edit();
+				editor.putString("general_participant_id", newValue.toString());
+				editor.commit();
+				preference.setSummary(newValue.toString());
+				editTextDeviceName.setText(newValue.toString());
+				return false;
+			}
+		});
+		
 		((CheckBoxPreference) findPreference("general_stay_awake")).setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
 			@Override
 			public boolean onPreferenceChange(Preference preference, Object newValue) {

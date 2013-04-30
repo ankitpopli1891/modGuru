@@ -12,7 +12,7 @@ public class Answers implements Serializable{
 		n = 0;
 		answer = new String[noOfQuestions];
 		for (int i=0;i<noOfQuestions;i++) 
-			answer[i] = "";
+			answer[i] = " ";
 	}
 	
 	public long getSerialVersionUID() {

@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,6 +29,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.aakashapp.modguru.src.ModifyQuizXML;
 import com.aakashapp.modguru.src.Parser;
 import com.aakashapp.modguru.src.Quiz;
 
@@ -74,7 +76,12 @@ public class SelectQuizActivity extends Activity {
 				listValues.put("date", quiz.getDate());
 				listValues.put("password", quiz.getPassword());
 				listValues.put("file", list[i]);
-				listValues.put("totalQues", String.valueOf(quiz.getQuestions().size()));
+				String quesCount = quiz.getQuesCount();
+				int totalQues = quiz.getQuestions().size();
+				if(quesCount==null || totalQues<Integer.parseInt(quesCount))
+					listValues.put("totalQues", String.valueOf(totalQues));
+				else
+					listValues.put("totalQues", quesCount);
 				listView.add(listValues);
 			}
 			if(listView.size()<1) {
@@ -144,11 +151,77 @@ public class SelectQuizActivity extends Activity {
 			break;
 
 		case R.id.itemBroadcast:
+			broadcastQuiz();
+			break;
 
 		default:
 			break;
 		}
 		return super.onContextItemSelected(item);
+	}
+
+	private void broadcastQuiz() {
+		AlertDialog.Builder alert = new AlertDialog.Builder(this);
+		alert.setTitle("Password");
+		alert.setMessage("Authentication Needed for this Action!!");
+		final EditText input = new EditText(this);
+		input.setInputType(InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_VARIATION_PASSWORD);
+		input.setHint("Password");
+		input.setPadding(20, 20, 20, 20);
+		alert.setView(input);
+
+		alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+				if(isPasswordCorrect(input.getText().toString())) {
+					AlertDialog.Builder alert = new AlertDialog.Builder(SelectQuizActivity.this);
+					alert.setTitle("Broadcast Quiz");
+					alert.setMessage("You can limit the Quiz to a lesser no. of Questions!!");
+					View inflate = ((LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.quiz_details_prompt, null);
+					final EditText editTextQuizSize = (EditText) inflate.findViewById(R.id.editTextNewQuizSize);
+					final EditText editTextTimeLimit = (EditText) inflate.findViewById(R.id.editTextNewTimeLimit);
+					alert.setView(inflate);
+					// TODO
+					alert.setPositiveButton("Full Quiz", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int whichButton) {
+							try {
+								ModifyQuizXML modifyQuizXML = new ModifyQuizXML(Environment.getDataDirectory().getAbsolutePath() +"/data/"+Main.PACKAGE_NAME+"/quiz/" + file);
+								modifyQuizXML.setAttribute("quiz", "score", "");
+								modifyQuizXML.setAttribute("quiz", "quesCount", "");
+								modifyQuizXML.saveQuizFile();
+							} catch (Exception e) {
+								Log.e("Broadcast", e.getMessage(),e);
+							}
+						}
+					});
+
+					alert.setNegativeButton("Limited Quiz", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int whichButton) {
+							try {
+								ModifyQuizXML modifyQuizXML = new ModifyQuizXML(Environment.getDataDirectory().getAbsolutePath() +"/data/"+Main.PACKAGE_NAME+"/quiz/" + file);
+								modifyQuizXML.setAttribute("quiz", "quesCount",editTextQuizSize.getText().toString());
+								modifyQuizXML.setAttribute("quiz", "time",editTextTimeLimit.getText().toString());
+								modifyQuizXML.setAttribute("quiz", "score", "");
+								modifyQuizXML.saveQuizFile();
+							} catch (Exception e) {
+								Log.e("Broadcast", e.getMessage(),e);
+							}
+						}
+					});
+					alert.show();
+				}
+				else
+					Toast.makeText(SelectQuizActivity.this, "Incorrect Password!!", Toast.LENGTH_SHORT).show();
+			}
+		});
+
+		alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+				/*
+				 * Do Nothing
+				 */
+			}
+		});
+		alert.show();
 	}
 
 	private void startQuiz() {
@@ -188,6 +261,8 @@ public class SelectQuizActivity extends Activity {
 			AlertDialog.Builder alert = new AlertDialog.Builder(this);
 			alert.setTitle("View Result");
 			View view = ((LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.dialog_start_quiz_message, null);
+			((TextView)view.findViewById(R.id.textViewTotalQues)).setVisibility(View.GONE);
+			((TextView)view.findViewById(R.id.textViewTimeLimit)).setVisibility(View.GONE);
 			((TextView)view.findViewById(R.id.textViewInstructions)).setText("You Have already attempted the Quiz!!");
 			((TextView)view.findViewById(R.id.textViewLine01)).setText("Do You Want to have a look at Your Previous Result ?");
 			alert.setView(view);
@@ -233,6 +308,7 @@ public class SelectQuizActivity extends Activity {
 						if(delete) {
 							Toast.makeText(SelectQuizActivity.this, "Quiz has been Deleted!!", Toast.LENGTH_SHORT).show();
 							startActivity(SelectQuizActivity.this.getIntent());
+							SelectQuizActivity.this.finish();
 						}
 						else
 							Toast.makeText(SelectQuizActivity.this, "Insufficient Permissions to perform this Action!!", Toast.LENGTH_SHORT).show();
@@ -337,4 +413,24 @@ public class SelectQuizActivity extends Activity {
 			if (resultCode == Activity.RESULT_OK)
 				finish();
 	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.list_menu, menu);
+		return true;
+	}
+	
+	@Override
+	public boolean onMenuItemSelected(int featureId, MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.itemRefresh:
+			startActivity(SelectQuizActivity.this.getIntent());
+			SelectQuizActivity.this.finish();
+			break;
+		default:
+			break;
+		}
+		return super.onMenuItemSelected(featureId, item);
+	}
+
 }

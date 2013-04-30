@@ -25,9 +25,7 @@ public class Parser {
 			reader = SAXParserFactory.newInstance().newSAXParser().getXMLReader();
 			this.stream=stream;
 		} catch (Exception e) {
-			Log.e("Parser Error", e.getMessage());
-			for(StackTraceElement s:e.getStackTrace())
-				Log.e("Parser Stack Trace", s.toString());
+			Log.e("Parser Error", e.getMessage(), e);
 		}
 	}
 
@@ -43,16 +41,18 @@ public class Parser {
 		return quiz;
 	}
 
-	public String extractResult() throws SAXException, ParserConfigurationException, IOException {
-		String summary="";
+	public ArrayList<String> extractResult() throws SAXException, ParserConfigurationException, IOException {
+		ArrayList<String> result=new ArrayList<String>();
 		reader = SAXParserFactory.newInstance().newSAXParser().getXMLReader();
 		ResultExtracter resultExtracter=new ResultExtracter();
 		reader.setContentHandler(resultExtracter);
 		reader.parse(new InputSource(stream));
-		summary=resultExtracter.getSummary();
+		result.add(resultExtracter.getSummary());
+		for(String s:resultExtracter.getAnswers())
+			result.add(s);
 
 		stream.close();
-		return summary;
+		return result;
 
 	}
 
@@ -86,7 +86,8 @@ public class Parser {
 					String score = attributes.getValue("score");
 					String date = attributes.getValue("date");
 					String password = attributes.getValue("password");
-					quiz = new Quiz(author, topic, time, score, date, password);
+					String quesCount = attributes.getValue("quesCount");
+					quiz = new Quiz(author, topic, time, score, date, password, quesCount);
 				} else if (qName.equalsIgnoreCase("question")) {
 					question = new Question();
 					optionsParsed = 0;
@@ -96,9 +97,7 @@ public class Parser {
 				}
 			}
 			catch (Exception e) {
-				Log.e("Parser Error", e.getMessage());
-				for(StackTraceElement s:e.getStackTrace())
-					Log.e("Parser Stack Trace", s.toString());
+				Log.e("Parser Error", e.getMessage(), e);
 			}
 		}
 
@@ -126,23 +125,23 @@ public class Parser {
 				}
 			}
 			catch (Exception e) {
-				Log.e("Parser Error", e.getMessage());
-				for(StackTraceElement s:e.getStackTrace())
-					Log.e("Parser Stack Trace", s.toString());
+				Log.e("Parser Error", e.getMessage(), e);
 			}
 		}
 	}
 
 	private class ResultExtracter extends DefaultHandler {
-		private String value, summary;// option;
-
+		private String value, summary;
+		private String[] ans;
+		private int index = 0;
+		
 		public String getSummary() {
 			return summary;
 		}
 
-		//		public String getOption() {
-		//			return option;
-		//		}
+		public String[] getAnswers() {
+			return ans;
+		}
 
 		public void startElement(String uri, String localName, String qName,
 				Attributes attributes) throws SAXException {
@@ -150,9 +149,7 @@ public class Parser {
 				value = "";
 			}
 			catch (Exception e) {
-				Log.e("Parser Error", e.getMessage());
-				for(StackTraceElement s:e.getStackTrace())
-					Log.e("Parser Stack Trace", s.toString());
+				Log.e("Parser Error", e.getMessage(), e);
 			}
 		}
 
@@ -166,15 +163,15 @@ public class Parser {
 			try {
 				if (qName.equalsIgnoreCase("summary")) {
 					summary=value;
+					ans = new String[summary.length()];
 				}
-				//			else if (qName.equals("OPTION")) {
-				//				option=value;
-				//			}
+				else if (qName.equals("ans")) {
+					ans[index]=value;
+					index++;
+				}
 			}
 			catch (Exception e) {
-				Log.e("Parser Error", e.getMessage());
-				for(StackTraceElement s:e.getStackTrace())
-					Log.e("Parser Stack Trace", s.toString());
+				Log.e("Parser Error", e.getMessage(), e);
 			}
 		}
 	}

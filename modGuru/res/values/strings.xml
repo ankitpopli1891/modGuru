@@ -12,6 +12,7 @@
     <string name="enter_author">Author Name</string>
     <string name="enter_topic">Topic</string>
     <string name="enter_time">Time Limit (in Minutes)</string>
+    <string name="enter_quiz_size">No. Of Questions</string>
     <string name="enter_pass">Password</string>
     <string name="add_ques">Add Question</string>
     <string name="quiz_completed">Save Quiz</string>
@@ -34,7 +35,8 @@
     <string name="menu_abt">About</string>
     <string name="menu_help">Help</string>
     <string name="menu_import">Import Quiz File</string>
-    <string name="menu_settings">Settings</string>
+    <string name="menu_settings">Preferences</string>
+    <string name="menu_refresh">Refresh</string>
 
     <string-array name="selectGraphView">
         <item>Bar Graph</item>

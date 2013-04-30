@@ -46,15 +46,18 @@ public class ResultActivity extends Activity {
 	int[] correctQuesCount, incorrectQuesCount, unattemptedQuesCount;
 	Spinner spinner;
 
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_result);
 
 		initialize();
-		loadResultData();
-
+		try {
+			loadResultData();
+		} catch (Exception e) {
+			Toast.makeText(ResultActivity.this, "No Results Found!!", Toast.LENGTH_SHORT).show();
+			finish();
+		}
 		spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 			@Override
 			public void onItemSelected(AdapterView<?> arg0, View arg1,
@@ -272,15 +275,27 @@ public class ResultActivity extends Activity {
 
 	protected void showBarGraph() {
 		XYSeries correctSeries = new XYSeries("Correct");
+		XYSeries incorrectSeries = new XYSeries("Incorrect");
+		XYSeries unattemptedSeries = new XYSeries("Unattempted");
 
-		for (int i=0 ; i<totalQuestions; i++)
+		for (int i=0 ; i<totalQuestions; i++) {
 			correctSeries.add(i, correctQuesCount[i]);
-
+			incorrectSeries.add(i, incorrectQuesCount[i]);
+			unattemptedSeries.add(i, unattemptedQuesCount[i]);
+		}
 		XYMultipleSeriesDataset dataset = new XYMultipleSeriesDataset();
 		dataset.addSeries(correctSeries);
+		dataset.addSeries(incorrectSeries);
+		dataset.addSeries(unattemptedSeries);
 
 		XYSeriesRenderer correctRenderer = new XYSeriesRenderer();
-		correctRenderer.setColor(Color.rgb(0, 0, 255));
+		correctRenderer.setColor(Color.BLUE);
+
+		XYSeriesRenderer incorrectRenderer = new XYSeriesRenderer();
+		incorrectRenderer.setColor(Color.RED);
+
+		XYSeriesRenderer unattemptedRenderer = new XYSeriesRenderer();
+		unattemptedRenderer.setColor(Color.LTGRAY);
 
 		XYMultipleSeriesRenderer multiRenderer = new XYMultipleSeriesRenderer();
 		multiRenderer.setMarginsColor(Color.rgb(255, 255, 255));
@@ -301,11 +316,13 @@ public class ResultActivity extends Activity {
 			multiRenderer.addXTextLabel(i, String.valueOf(i+1));    		
 		}  
 		multiRenderer.addSeriesRenderer(correctRenderer);
+		multiRenderer.addSeriesRenderer(incorrectRenderer);
+		multiRenderer.addSeriesRenderer(unattemptedRenderer);
 
-		GraphicalView barChartView = ChartFactory.getBarChartView(ResultActivity.this, dataset, multiRenderer, Type.STACKED);
+		GraphicalView barChartView = ChartFactory.getBarChartView(ResultActivity.this, dataset, multiRenderer, Type.DEFAULT);
 		graphView.removeAllViews();
 		graphView.addView(barChartView);
-	}	
+	}
 
 	private void initialize() {
 		results = new ArrayList<String>();
@@ -326,7 +343,7 @@ public class ResultActivity extends Activity {
 			for(File f: path.listFiles()) {
 				try {
 					Parser p = new Parser(new FileInputStream(f));
-					results.add(p.extractResult());
+					results.add(p.extractResult().get(0));
 				} catch (Exception e) {
 					Log.e("IO", "RESULT",e);
 					Toast.makeText(ResultActivity.this, "One or More Results failed to Load!!", Toast.LENGTH_SHORT).show();
@@ -348,7 +365,7 @@ public class ResultActivity extends Activity {
 				unattemptedQuesCount[i]=0;
 				for (int j=0; j<totalResults;j++)
 					switch (resultSummaryData[j][i]) {
-					case 0:		
+					case 0:
 						unattemptedQuesCount[i]++;
 						break;
 					case 1:
@@ -404,5 +421,4 @@ public class ResultActivity extends Activity {
 			ResultActivity.this.finish();
 		}
 	}
-
 }

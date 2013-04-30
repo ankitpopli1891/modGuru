@@ -2,7 +2,6 @@ package com.aakashapp.modguru;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 
 import android.app.Activity;
@@ -33,6 +32,7 @@ import android.widget.Toast;
 
 import com.aakashapp.modguru.src.Answers;
 import com.aakashapp.modguru.src.ExportResult;
+import com.aakashapp.modguru.src.ModifyQuizXML;
 import com.aakashapp.modguru.src.Option;
 import com.aakashapp.modguru.src.Parser;
 import com.aakashapp.modguru.src.Question;
@@ -208,6 +208,40 @@ public class QuizActivity extends Activity {
 		} catch (Exception e) {
 			Log.e("WakeLock", e.getMessage(),e);
 		}
+		loadPreviousResults();
+	}
+	private void loadPreviousResults() {
+		String score = quiz.getScore();
+		if(!score.equals("")) {
+			String resultFolder = getIntent().getStringExtra("file");
+			File path=new File(Environment.getDataDirectory()+"/data/"+Main.PACKAGE_NAME+"/res/"+resultFolder);
+			if(path.isDirectory()) {
+				try {
+					Parser p = new Parser(new FileInputStream(new File(path + "/" + path.list()[0])));
+
+					ArrayList<String> extractResult = p.extractResult();
+					String extractResultSummary = extractResult.get(0);
+					for(int i=0; i<totalQuestions;i++)
+						result[i] = Integer.parseInt(""+extractResultSummary.charAt(i));
+
+					for(int i=1;i<=totalQuestions;i++) {
+						answers.setAnswer(i-1, extractResult.get(i));
+					}
+					/*
+					String[] split = extractResultSummary.split("");
+					int i = 0;
+					for(String s:split) {
+						Log.e("dsasdasdasd123", s);
+						//result[i] = Integer.parseInt(""+s);
+						i++;
+					}*/
+					submitted = true;
+					submitTest();
+				} catch (Exception e) {
+					Log.e("RESULT", "No Result Found", e);
+				}
+			}
+		}
 	}
 	private void startCountdown(long timeInMillis) {
 		timer = new CountDownTimer(timeInMillis, 1000) {
@@ -228,12 +262,12 @@ public class QuizActivity extends Activity {
 		timer.start();
 	}
 	protected void saveAnswer() {
-		String ans = "";
+		String ans = " ";
 		for(int i=0; i<4;i++)
 			if(checkBox[i].isChecked())
 				ans += i;
 		answers.setAnswer(index[atQues], ans);
-		if(ans.equals(""))
+		if(ans.equals(" "))
 			result[index[atQues]] = 0;
 		else if(ans.equals(correctAnswers[index[atQues]]))
 			result[index[atQues]] = 1;
@@ -242,13 +276,20 @@ public class QuizActivity extends Activity {
 
 		attemptedQuestions = 1;
 		for (int i=0; i<totalQuestions; i++) {
-			if(!answers.getAnswer(index[i]).equals(""))
+			if(!answers.getAnswer(index[i]).equals(" "))
 				attemptedQuestions++;
 		}
 	}
 	protected void submitTest() {
-		saveAnswer();
-
+		if(submitted) {
+			attemptedQuestions = 1;
+			for (int i=0; i<totalQuestions; i++) {
+				if(!answers.getAnswer(index[i]).equals(" "))
+					attemptedQuestions++;
+			}
+		}
+		else
+			saveAnswer();
 		int noca = 0;
 		for(int i:result)
 			if(i==1)
@@ -305,26 +346,12 @@ public class QuizActivity extends Activity {
 	}
 
 	private void updateOriginalFile(String score) {
-		quizData = new QuizData();
-		quizData.setMetaData(quiz.getAuthor(), quiz.getTopic(), quiz.getTime(), quiz.getPassword(), score);
-		for(Question q:questions) {
-			quizData.addQuestion(q.getQuestion());
-			Option[] options = q.getOptions();
-			String[] opts = new String[4];
-			String copt = "";
-			for(int i=0;i<4;i++) {
-				opts[i] = options[i].getOptionValue();
-				if(options[i].isOptionCorrectAnswer())
-					copt+= String.valueOf(i);
-			}
-			quizData.addOptions(opts);
-			quizData.setCorrectOpt(copt);
-			quizData.addNote(q.getNote());
-		}
 		try {
-			quizData.writeToXML(xmlFile);
-		} catch (IOException e) {
-			Log.e("Update Score", "Write Fail", e);
+			ModifyQuizXML modifyQuizXML = new ModifyQuizXML(Environment.getDataDirectory().getAbsolutePath() +"/data/"+Main.PACKAGE_NAME+"/quiz/" + xmlFile);
+			modifyQuizXML.setAttribute("quiz", "score", score);
+			modifyQuizXML.saveQuizFile();
+		} catch (Exception e) {
+			Log.e("Update Score", e.getMessage(),e);
 		}
 	}
 
@@ -338,37 +365,23 @@ public class QuizActivity extends Activity {
 		} 
 		questions = quiz.getQuestions();
 		totalQuestions = questions.size();
+		
+		String quesCount = quiz.getQuesCount();
+		if(quesCount!=null && totalQuestions>Integer.parseInt(quesCount))
+			totalQuestions = Integer.parseInt(quesCount);
+		
 		answers = new Answers(totalQuestions);
 		result = new int[totalQuestions];
 		index = new RandomArray().getArray(totalQuestions);
 		correctAnswers = new String[totalQuestions];
 		for(int i=0; i<totalQuestions; i++) {
-			correctAnswers[i] = "";
+			correctAnswers[i] = " ";
 			Option opts[] = questions.get(i).getOptions();
 			for(int j=0;j<4;j++)
 				if(opts[j].isOptionCorrectAnswer())
 					correctAnswers[i] +=j;
 		}
 		setTitle(quiz.getTopic()+" - By "+quiz.getAuthor());
-		// TODO
-		String score = quiz.getScore();
-		if(!score.equals("")) {
-			String resultFolder = getIntent().getStringExtra("file");
-			File path=new File(Environment.getDataDirectory()+"/data/"+Main.PACKAGE_NAME+"/res/"+resultFolder);
-			if(path.isDirectory()) {
-				try {
-					Parser p = new Parser(new FileInputStream(path + path.list()[0]));
-					String extractResult = p.extractResult();
-					int length = extractResult.length();
-					for (int i=0; i<length; i++)
-						result[i] = Integer.parseInt(extractResult.substring(i,	i));
-					submitted = true;
-					submitTest();
-				} catch (Exception e) {
-					Log.e("RESULT", "No Result Found", e);
-				}
-			}
-		}
 	}
 
 	private void refreshView() {
@@ -401,7 +414,7 @@ public class QuizActivity extends Activity {
 				buttonLast.setEnabled(true);
 			}
 			for (int i=0; i<totalQuestions; i++) {
-				if(answers.getAnswer(index[i]).equals("")) {
+				if(answers.getAnswer(index[i]).equals(" ")) {
 					b[i].setBackgroundResource(R.drawable.button_checkbox_unattempted);
 					b[i].setText(String.valueOf(i+1));
 				}
