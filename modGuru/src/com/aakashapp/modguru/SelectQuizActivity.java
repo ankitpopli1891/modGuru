@@ -29,6 +29,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.aakashapp.modguru.src.AcessPoint;
 import com.aakashapp.modguru.src.ModifyQuizXML;
 import com.aakashapp.modguru.src.Parser;
 import com.aakashapp.modguru.src.Quiz;
@@ -188,6 +189,7 @@ public class SelectQuizActivity extends Activity {
 								modifyQuizXML.setAttribute("quiz", "score", "");
 								modifyQuizXML.setAttribute("quiz", "quesCount", "");
 								modifyQuizXML.saveQuizFile();
+								broadcastQuizFile(file);
 							} catch (Exception e) {
 								Log.e("Broadcast", e.getMessage(), e);
 							}
@@ -202,6 +204,7 @@ public class SelectQuizActivity extends Activity {
 								modifyQuizXML.setAttribute("quiz", "time",editTextTimeLimit.getText().toString());
 								modifyQuizXML.setAttribute("quiz", "score", "");
 								modifyQuizXML.saveQuizFile();
+								broadcastQuizFile(file);
 							} catch (Exception e) {
 								Log.e("Broadcast", e.getMessage(), e);
 							}
@@ -431,6 +434,31 @@ public class SelectQuizActivity extends Activity {
 			break;
 		}
 		return super.onMenuItemSelected(featureId, item);
+	}
+	
+	AlertDialog.Builder broadcastDialog;
+	public static TextView textViewBroadcastDialogMessage;
+	
+	private void broadcastQuizFile(String file) {
+		// TODO Auto-generated method stub
+		broadcastDialog = new AlertDialog.Builder(this);
+		broadcastDialog.setTitle("Broadcasting Quiz");
+		View inflate = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.dialog_broadcast, null);
+		textViewBroadcastDialogMessage = ((TextView) inflate.findViewById(R.id.textViewBroadcastDialogMessage));
+		textViewBroadcastDialogMessage.setText("Configuring Access Point..");
+		broadcastDialog.setView(inflate);
+		broadcastDialog.show();
+		try {
+			new AcessPoint(SelectQuizActivity.this).create();
+		} catch (Exception e) {
+			Log.e("AP", e.getMessage(), e);
+			textViewBroadcastDialogMessage.setText("Can't Configure Hotspot!!\nYou need to manually configure Hotspot.");
+			broadcastDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+				}
+			});
+		}
 	}
 
 }

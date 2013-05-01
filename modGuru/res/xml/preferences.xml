@@ -4,10 +4,11 @@
 
     <PreferenceCategory android:title="General" >
         <EditTextPreference
-            android:title="Participant Name / Participant ID"
             android:defaultValue="Anonymous"
-            android:key="general_participant_id" />
-        <CheckBoxPreference
+            android:key="general_participant_id"
+            android:title="Participant Name / Participant ID" />
+
+        <CheckBoxPreference
             android:defaultValue="false"
             android:key="general_stay_awake"
             android:summary="Screen won&apos;t Black out while attempting Quiz."
@@ -19,6 +20,11 @@
             android:title="Swipe Enabled" />
     </PreferenceCategory>
     <PreferenceCategory android:title="Advanced" >
+        <EditTextPreference
+            android:defaultValue="modGuru"
+            android:key="advanced_network_ssid"
+            android:title="Network SSID" />
+
         <Preference
             android:enabled="false"
             android:title="Backup Data" />
