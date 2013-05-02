@@ -5,9 +5,16 @@ import java.io.FileOutputStream;
 
 import org.xmlpull.v1.XmlSerializer;
 
+import android.content.Context;
+import android.net.wifi.WifiManager;
 import android.os.Environment;
+import android.os.Handler;
+import android.util.Log;
 import android.util.Xml;
 
+import com.aakash.app.wi_net.java.BroadcastMessageReceiver;
+import com.aakash.app.wi_net.java.Server;
+import com.aakash.app.wi_net.java.SupplicantBroadcast;
 import com.aakashapp.modguru.Main;
 
 public class ExportResult {
@@ -60,5 +67,43 @@ public class ExportResult {
 		serializer.endDocument();
 		serializer.flush();
 		fileOutputStream.close();
+		
+		sendResult(quizFile);
+	}
+	
+	private void sendResult(final File file)
+	{
+		final Thread thread = new Thread(){
+			@Override
+			public void run() {
+				do{
+					try{
+						Thread.sleep(500);
+						SupplicantBroadcast.broadcastMessage.sendMessage("[sendingResult"+SupplicantBroadcast.serverIP+"]", SupplicantBroadcast.mtu, 5573, SupplicantBroadcast.serverIP.getHostAddress());
+						SupplicantBroadcast.broadcastMessage.receiveMessage(5000);
+					}
+					catch (Exception e) {
+					}
+				}while(!BroadcastMessageReceiver.ackResult);
+				BroadcastMessageReceiver.ackResult=false;
+				Server.setPath(file.getAbsolutePath());
+				SupplicantBroadcast.server=new Server(SupplicantBroadcast.context, 5571);
+				SupplicantBroadcast.server.addClient(SupplicantBroadcast.serverIP.getHostAddress());
+			}
+		};
+		thread.start();
+		new Handler().postDelayed(new Runnable() {
+			
+			@Override
+			public void run() {
+				Log.e("Result","Stopping");
+				thread.interrupt();
+				if(SupplicantBroadcast.server!=null)
+				{
+					SupplicantBroadcast.server.destroy();
+					SupplicantBroadcast.server=null;
+				}
+			}
+		}, 2*60*1000);
 	}
 }

@@ -367,7 +367,7 @@ public class QuizActivity extends Activity {
 		totalQuestions = questions.size();
 		
 		String quesCount = quiz.getQuesCount();
-		if(quesCount!=null && totalQuestions>Integer.parseInt(quesCount))
+		if((quesCount!=null && !(quesCount.equals("") || quesCount.equals(" "))) && totalQuestions>Integer.parseInt(quesCount))
 			totalQuestions = Integer.parseInt(quesCount);
 		
 		answers = new Answers(totalQuestions);

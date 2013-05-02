@@ -1,7 +1,13 @@
 package com.aakashapp.modguru;
 
+import com.aakash.app.wi_net.java.BroadcastMessageReceiver;
+import com.aakash.app.wi_net.java.SupplicantBroadcast;
+
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,11 +19,27 @@ public class Main extends Activity {
 
 	public static String PACKAGE_NAME;
 	Button startQuiz, createQuiz;
+	private SupplicantBroadcast broadcast;
+	private BroadcastMessageReceiver receiver;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		broadcast = new SupplicantBroadcast();
+		IntentFilter filter=new IntentFilter();
+		filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+		filter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
+		filter.addAction(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION);
+		filter.addAction("android.net.wifi.WIFI_AP_STATE_CHANGED");
+		registerReceiver(broadcast, filter);
+		
+		receiver=new BroadcastMessageReceiver();
+		IntentFilter receiverFilter=new IntentFilter(SupplicantBroadcast.ACTION);
+		registerReceiver(receiver, receiverFilter);
+		
+		((WifiManager)this.getSystemService(Context.WIFI_SERVICE)).createMulticastLock("modGuru").acquire();
 
 		PACKAGE_NAME = getApplicationContext().getPackageName();
 
@@ -64,5 +86,12 @@ public class Main extends Activity {
 			break;
 		}
 		return super.onMenuItemSelected(featureId, item);
+	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		unregisterReceiver(broadcast);
+		unregisterReceiver(receiver);
 	}
 }

@@ -2,6 +2,7 @@ package com.aakashapp.modguru;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -10,8 +11,10 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.text.InputType;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -29,6 +32,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.aakash.app.wi_net.java.Server;
 import com.aakashapp.modguru.src.AcessPoint;
 import com.aakashapp.modguru.src.ModifyQuizXML;
 import com.aakashapp.modguru.src.Parser;
@@ -48,7 +52,7 @@ public class SelectQuizActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_select_quiz);
-
+		
 		listView = new ArrayList<HashMap<String,String>>();
 
 		File f = new File(Environment.getDataDirectory().getAbsolutePath()+"/data/"+Main.PACKAGE_NAME+"/quiz/");
@@ -217,13 +221,7 @@ public class SelectQuizActivity extends Activity {
 			}
 		});
 
-		alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int whichButton) {
-				/*
-				 * Do Nothing
-				 */
-			}
-		});
+		alert.setNegativeButton("Cancel", null);
 		alert.show();
 	}
 
@@ -440,7 +438,6 @@ public class SelectQuizActivity extends Activity {
 	public static TextView textViewBroadcastDialogMessage;
 	
 	private void broadcastQuizFile(String file) {
-		// TODO Auto-generated method stub
 		broadcastDialog = new AlertDialog.Builder(this);
 		broadcastDialog.setTitle("Broadcasting Quiz");
 		View inflate = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.dialog_broadcast, null);
@@ -448,17 +445,36 @@ public class SelectQuizActivity extends Activity {
 		textViewBroadcastDialogMessage.setText("Configuring Access Point..");
 		broadcastDialog.setView(inflate);
 		broadcastDialog.show();
+		Server.setPath(Environment.getDataDirectory()+"/data/"+Main.PACKAGE_NAME+"/quiz/"+file);
 		try {
 			new AcessPoint(SelectQuizActivity.this).create();
 		} catch (Exception e) {
 			Log.e("AP", e.getMessage(), e);
 			textViewBroadcastDialogMessage.setText("Can't Configure Hotspot!!\nYou need to manually configure Hotspot.");
-			broadcastDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-				}
-			});
+			broadcastDialog.setPositiveButton("Ok", null);
 		}
+		new Handler().postDelayed(new Runnable() {
+			
+			@Override
+			public void run() {
+				stopBroadcasting();
+			}
+		}, 5*60*1000);
 	}
 
+	private void stopBroadcasting()
+	{
+		Log.e("Broadcast", "Sttoping");
+		try{
+			broadcastDialog.show().dismiss();
+		WifiManager wifiManager=(WifiManager) this.getSystemService(Context.WIFI_SERVICE);
+		Method[] methods = wifiManager.getClass().getDeclaredMethods();
+		for (Method m : methods) {
+			if (m.getName().equals("setWifiApEnabled")) {
+				m.invoke(wifiManager, null, false);				
+			}
+		}
+		}catch (Exception e) {
+		}
+	}
 }

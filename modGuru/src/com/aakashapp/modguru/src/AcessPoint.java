@@ -9,7 +9,6 @@ import android.content.Context;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 public class AcessPoint {
 
@@ -40,7 +39,6 @@ public class AcessPoint {
 		
 		Method[] methods = wifiManager.getClass().getDeclaredMethods();
 		for (Method m : methods) {
-			Log.e("asdas", m.getName());
 			if (m.getName().equals("setWifiApEnabled")) {
 				SelectQuizActivity.textViewBroadcastDialogMessage.setText("Configuring Access Point..");
 				boolean b = (Boolean) m.invoke(wifiManager, wifiConfiguration, true);
