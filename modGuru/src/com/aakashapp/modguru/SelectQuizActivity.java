@@ -52,7 +52,7 @@ public class SelectQuizActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_select_quiz);
-		
+
 		listView = new ArrayList<HashMap<String,String>>();
 
 		File f = new File(Environment.getDataDirectory().getAbsolutePath()+"/data/"+Main.PACKAGE_NAME+"/quiz/");
@@ -83,7 +83,7 @@ public class SelectQuizActivity extends Activity {
 				listValues.put("file", list[i]);
 				String quesCount = quiz.getQuesCount();
 				int totalQues = quiz.getQuestions().size();
-				if(quesCount==null || quesCount.equals("") || totalQues<Integer.parseInt(quesCount))
+				if((quesCount!=null && !(quesCount.equals("") || quesCount.equals(" "))) && totalQues>Integer.parseInt(quesCount))
 					listValues.put("totalQues", String.valueOf(totalQues));
 				else
 					listValues.put("totalQues", quesCount);
@@ -185,7 +185,6 @@ public class SelectQuizActivity extends Activity {
 					final EditText editTextQuizSize = (EditText) inflate.findViewById(R.id.editTextNewQuizSize);
 					final EditText editTextTimeLimit = (EditText) inflate.findViewById(R.id.editTextNewTimeLimit);
 					alert.setView(inflate);
-					// TODO
 					alert.setPositiveButton("Full Quiz", new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int whichButton) {
 							try {
@@ -302,7 +301,6 @@ public class SelectQuizActivity extends Activity {
 		alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
 				if(isPasswordCorrect(input.getText().toString())) {
-
 					File f = new File(Environment.getDataDirectory().getAbsolutePath()+"/data/"+Main.PACKAGE_NAME+"/quiz/"+file);
 					if(f.exists()) {
 						boolean delete = f.delete();
@@ -428,33 +426,32 @@ public class SelectQuizActivity extends Activity {
 			startActivity(SelectQuizActivity.this.getIntent());
 			SelectQuizActivity.this.finish();
 			break;
+		case R.id.itemCreateAP:
+			try {
+				new AcessPoint(SelectQuizActivity.this).create();
+			} catch (Exception e) {
+				Log.e("AP", e.getMessage(), e);
+			}
+			break;
 		default:
 			break;
 		}
 		return super.onMenuItemSelected(featureId, item);
 	}
-	
+
 	AlertDialog.Builder broadcastDialog;
 	public static TextView textViewBroadcastDialogMessage;
-	
+
 	private void broadcastQuizFile(String file) {
 		broadcastDialog = new AlertDialog.Builder(this);
 		broadcastDialog.setTitle("Broadcasting Quiz");
 		View inflate = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.dialog_broadcast, null);
 		textViewBroadcastDialogMessage = ((TextView) inflate.findViewById(R.id.textViewBroadcastDialogMessage));
-		textViewBroadcastDialogMessage.setText("Configuring Access Point..");
+		textViewBroadcastDialogMessage.setText("Broadcasting Quiz..");
 		broadcastDialog.setView(inflate);
 		broadcastDialog.show();
 		Server.setPath(Environment.getDataDirectory()+"/data/"+Main.PACKAGE_NAME+"/quiz/"+file);
-		try {
-			new AcessPoint(SelectQuizActivity.this).create();
-		} catch (Exception e) {
-			Log.e("AP", e.getMessage(), e);
-			textViewBroadcastDialogMessage.setText("Can't Configure Hotspot!!\nYou need to manually configure Hotspot.");
-			broadcastDialog.setPositiveButton("Ok", null);
-		}
 		new Handler().postDelayed(new Runnable() {
-			
 			@Override
 			public void run() {
 				stopBroadcasting();
@@ -462,19 +459,23 @@ public class SelectQuizActivity extends Activity {
 		}, 5*60*1000);
 	}
 
-	private void stopBroadcasting()
-	{
-		Log.e("Broadcast", "Sttoping");
+	private void stopBroadcasting() {
+		Log.e("Broadcast", "Stopping");
 		try{
 			broadcastDialog.show().dismiss();
-		WifiManager wifiManager=(WifiManager) this.getSystemService(Context.WIFI_SERVICE);
-		Method[] methods = wifiManager.getClass().getDeclaredMethods();
-		for (Method m : methods) {
-			if (m.getName().equals("setWifiApEnabled")) {
-				m.invoke(wifiManager, null, false);				
-			}
+			WifiManager wifiManager=(WifiManager) this.getSystemService(Context.WIFI_SERVICE);
+			Method[] methods = wifiManager.getClass().getDeclaredMethods();
+			for (Method m : methods) 
+				if (m.getName().equals("setWifiApEnabled")) 
+					m.invoke(wifiManager, null, false);				
+		} catch (Exception e) {
+			Log.e("Broadcast", e.getMessage(), e);
 		}
-		}catch (Exception e) {
-		}
+	}
+	
+	@Override
+	public void onBackPressed() {
+		stopBroadcasting();
+		super.onBackPressed();
 	}
 }

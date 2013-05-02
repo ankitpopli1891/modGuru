@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-    
-<item
+
+    <item
         android:id="@+id/itemRefresh"
         android:title="@string/menu_refresh">
     </item>
+    <item
+        android:id="@+id/itemCreateAP"
+        android:title="@string/menu_create_ap">
+    </item>
+
 </menu>

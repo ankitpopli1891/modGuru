@@ -217,7 +217,7 @@ public class QuizActivity extends Activity {
 			File path=new File(Environment.getDataDirectory()+"/data/"+Main.PACKAGE_NAME+"/res/"+resultFolder);
 			if(path.isDirectory()) {
 				try {
-					Parser p = new Parser(new FileInputStream(new File(path + "/" + path.list()[0])));
+					Parser p = new Parser(new FileInputStream(new File(path + "/" + resultFolder)));
 
 					ArrayList<String> extractResult = p.extractResult();
 					String extractResultSummary = extractResult.get(0);
@@ -227,14 +227,6 @@ public class QuizActivity extends Activity {
 					for(int i=1;i<=totalQuestions;i++) {
 						answers.setAnswer(i-1, extractResult.get(i));
 					}
-					/*
-					String[] split = extractResultSummary.split("");
-					int i = 0;
-					for(String s:split) {
-						Log.e("dsasdasdasd123", s);
-						//result[i] = Integer.parseInt(""+s);
-						i++;
-					}*/
 					submitted = true;
 					submitTest();
 				} catch (Exception e) {

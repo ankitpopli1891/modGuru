@@ -5,8 +5,6 @@ import java.io.FileOutputStream;
 
 import org.xmlpull.v1.XmlSerializer;
 
-import android.content.Context;
-import android.net.wifi.WifiManager;
 import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
@@ -38,7 +36,7 @@ public class ExportResult {
 		if(!quizFolder.exists())
 			quizFolder.mkdirs();
 
-		quizFile = new File(quizFolder+"/"+System.currentTimeMillis());
+		quizFile = new File(quizFolder+"/"+quizFile);
 		if(!quizFile.exists())
 			quizFile.createNewFile();
 
@@ -76,13 +74,12 @@ public class ExportResult {
 		final Thread thread = new Thread(){
 			@Override
 			public void run() {
-				do{
-					try{
+				do {
+					try {
 						Thread.sleep(500);
 						SupplicantBroadcast.broadcastMessage.sendMessage("[sendingResult"+SupplicantBroadcast.serverIP+"]", SupplicantBroadcast.mtu, 5573, SupplicantBroadcast.serverIP.getHostAddress());
 						SupplicantBroadcast.broadcastMessage.receiveMessage(5000);
-					}
-					catch (Exception e) {
+					} catch (Exception e) {
 					}
 				}while(!BroadcastMessageReceiver.ackResult);
 				BroadcastMessageReceiver.ackResult=false;
@@ -96,10 +93,9 @@ public class ExportResult {
 			
 			@Override
 			public void run() {
-				Log.e("Result","Stopping");
+				Log.e("Result", "Stopping");
 				thread.interrupt();
-				if(SupplicantBroadcast.server!=null)
-				{
+				if(SupplicantBroadcast.server!=null) {
 					SupplicantBroadcast.server.destroy();
 					SupplicantBroadcast.server=null;
 				}

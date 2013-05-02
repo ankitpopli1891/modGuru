@@ -3,8 +3,6 @@ package com.aakashapp.modguru.src;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import com.aakashapp.modguru.SelectQuizActivity;
-
 import android.content.Context;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
@@ -34,16 +32,12 @@ public class AcessPoint {
 		
 		if(wifiManager.isWifiEnabled()) {
 			wifiManager.setWifiEnabled(false);
-			SelectQuizActivity.textViewBroadcastDialogMessage.setText("Disabling Wifi..");
 		}
 		
 		Method[] methods = wifiManager.getClass().getDeclaredMethods();
 		for (Method m : methods) {
 			if (m.getName().equals("setWifiApEnabled")) {
-				SelectQuizActivity.textViewBroadcastDialogMessage.setText("Configuring Access Point..");
-				boolean b = (Boolean) m.invoke(wifiManager, wifiConfiguration, true);
-				if(b)
-					SelectQuizActivity.textViewBroadcastDialogMessage.setText("Broadcasting Quiz..");
+				m.invoke(wifiManager, wifiConfiguration, true);
 			}
 		}
 	}
