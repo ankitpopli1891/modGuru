@@ -157,26 +157,23 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int button_checkbox_unattempted=0x7f020010;
         public static final int button_checkbox_wrong=0x7f020011;
         public static final int button_delete_ques=0x7f020012;
-        public static final int help2=0x7f020013;
-        public static final int help3=0x7f020014;
-        public static final int help5=0x7f020015;
-        public static final int help6=0x7f020016;
-        public static final int help7=0x7f020017;
+        public static final int help1=0x7f020013;
+        public static final int help2=0x7f020014;
+        public static final int help3=0x7f020015;
+        public static final int help4=0x7f020016;
+        public static final int help5=0x7f020017;
         public static final int ic_action_next_dark=0x7f020018;
         public static final int ic_action_next_light=0x7f020019;
         public static final int ic_action_prev_light=0x7f02001a;
         public static final int ic_first_light=0x7f02001b;
         public static final int ic_last_light=0x7f02001c;
         public static final int ic_launcher=0x7f02001d;
-        public static final int ic_launcher_mg=0x7f02001e;
-        public static final int ic_menu_add=0x7f02001f;
-        public static final int ic_menu_cancel=0x7f020020;
-        public static final int ic_menu_delete=0x7f020021;
-        public static final int ic_menu_edit=0x7f020022;
-        public static final int ic_menu_save=0x7f020023;
-        public static final int ic_menu_start=0x7f020024;
-        public static final int modgurutext=0x7f020025;
-        public static final int xml_format=0x7f020026;
+        public static final int ic_menu_add=0x7f02001e;
+        public static final int ic_menu_cancel=0x7f02001f;
+        public static final int ic_menu_delete=0x7f020020;
+        public static final int ic_menu_edit=0x7f020021;
+        public static final int ic_menu_save=0x7f020022;
+        public static final int ic_menu_start=0x7f020023;
     }
     public static final class id {
         public static final int ButtonFirst=0x7f0e003b;

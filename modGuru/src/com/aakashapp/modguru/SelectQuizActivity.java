@@ -84,9 +84,10 @@ public class SelectQuizActivity extends Activity {
 				String quesCount = quiz.getQuesCount();
 				int totalQues = quiz.getQuestions().size();
 				if((quesCount!=null && !(quesCount.equals("") || quesCount.equals(" "))) && totalQues>Integer.parseInt(quesCount))
-					listValues.put("totalQues", String.valueOf(totalQues));
-				else
 					listValues.put("totalQues", quesCount);
+				else
+					listValues.put("totalQues", String.valueOf(totalQues));
+					
 				listView.add(listValues);
 			}
 			if(listView.size()<1) {
