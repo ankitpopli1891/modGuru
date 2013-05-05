@@ -7,7 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 public class HelpFragmentAdapter extends FragmentPagerAdapter {
-    protected static final int[] CONTENT = new int[] { R.drawable.help1, R.drawable.help2, R.drawable.help3, R.drawable.help4, R.drawable.help5};
+    protected static final int[] CONTENT = new int[] { R.drawable.help1, R.drawable.help2, R.drawable.help3, R.drawable.help4, R.drawable.help5, R.drawable.help6, R.drawable.help7, R.drawable.help8};
 
     private int mCount = CONTENT.length;
 
