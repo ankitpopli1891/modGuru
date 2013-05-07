@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>XML Generator</title>
+        <script type="text/javascript" src="js/jquery-1.9.0.js"></script>
+        <script type="text/javascript" src="js/jquery-ui-1.10.0.custom.min.js"></script>
+        <script type="text/javascript" src="js/custom.js"></script>
+        <link rel="stylesheet" href="css/flick/jquery-ui-1.10.0.custom.css"/>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                initializeUI();
+                $('#content').hide();
+                $('#bt_add').click(function() {
+                    if (validateQuestion())
+                        updateQuestion();
+                });
+                $('#bt_next').click(function() {
+                    if (validateMeta()) {
+                        $('#metadata').hide();
+                        $('#content').show();
+                        update();
+                    }
+                });
+
+                var template = [
+                    '<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>',
+                    '<quiz author="<?author?>" topic="<?topic?>" time="<?time?>" password="<?password?>"> date="<?date?>"',
+                    '</quiz>'
+                ].join('\r\n');
+
+                var newXml;
+
+                function update() {
+                    var today = new Date();
+                    var dd = today.getDate();
+                    var mm = today.getMonth() + 1;
+
+                    var yyyy = today.getFullYear();
+                    if (dd < 10) {
+                        dd = '0' + dd;
+                    }
+                    if (mm < 10) {
+                        mm = '0' + mm;
+                    }
+                    today = dd + '/' + mm + '/' + yyyy;
+                            
+                    var variables = {
+                    'author': $('#author').val(),
+                            'topic': $('#topic').val(),
+                            'time': $('#time').val(),
+                            'password': $('#password').val(),
+                            'date': today
+                    };
+
+                    newXml = template.replace(/<\?(\w+)\?>/g,
+                            function(match, name) {
+                                return variables[name];
+                            });
+                    $('#ResultXml').val(newXml);
+                    $('#msg').html('');
+                }
+
+                function updateQuestion() {
+                    var variables = {
+                        'ques': $('#question').val(),
+                        'c1': $('#c1').is(':checked'),
+                        'opt1': $('#opt1').val(),
+                        'c2': $('#c2').is(':checked'),
+                        'opt2': $('#opt2').val(),
+                        'c3': $('#c3').is(':checked'),
+                        'opt3': $('#opt3').val(),
+                        'c4': $('#c4').is(':checked'),
+                        'opt4': $('#opt4').val(),
+                        'note': $('#note').val()
+                    };
+                    var questionTemplate = ['\n<question>',
+                        '<ques><?ques?></ques>',
+                        '<option<?c1?>><?opt1?></option>',
+                        '<option<?c2?>><?opt2?></option>',
+                        '<option<?c3?>><?opt3?></option>',
+                        '<option<?c4?>><?opt4?></option>',
+                        '<note><?note?></note>',
+                        '</question>'
+                    ].join("\r\n");
+                    var temp = newXml.split("\r\n");
+                    var question = questionTemplate.replace(/<\?(\w+)\?>/g,
+                            function(match, name) {
+                                if (name.match(/c\d/))
+                                    if (variables[name])
+                                        return ' correct=true';
+                                    else
+                                        return '';
+                                return variables[name];
+                            }
+                    );
+                    temp[temp.length - 2] = temp[temp.length - 2].concat(question);
+                    temp = temp.join("\r\n");
+                    $('#ResultXml').val(temp);
+                    newXml = temp;
+                    refresh();
+                }
+
+                function refresh() {
+                    $('input:checked').attr('checked', false);
+                    $('#question').val('');
+                    $('#opt1').val('');
+                    $('#opt2').val('');
+                    $('#opt3').val('');
+                    $('#opt4').val('');
+                    $('#note').val('');
+                    $('#msg').html('');
+                }
+
+                function validateMeta() {
+                    if ($('#author').val() === "")
+                    {
+                        $('#author').focus();
+                        $('#msg').html('Author required');
+                        return false;
+                    }
+                    if ($('#topic').val() === "")
+                    {
+                        $('#topic').focus();
+                        $('#msg').html('Topic required');
+                        return false;
+                    }
+                    if ($('#time').val() === "" || !$('#time').val().match(/\d+/))
+                    {
+                        $('#time').focus();
+                        if ($('#time').val() === "")
+                            $('#msg').html('Time required');
+                        else
+                            $('#msg').html('Time must be a number');
+                        return false;
+                    }
+                    if ($('#password').val() === "")
+                    {
+                        $('#password').focus();
+                        $('#msg').html('Password required');
+                        return false;
+                    }
+                    return true;
+                }
+
+                function validateQuestion() {
+                    if ($('#question').val() === "")
+                    {
+                        $('#question').focus();
+                        $('#msg').html("Question required");
+                        return false;
+                    }
+                    if ($('#opt1').val() === "")
+                    {
+                        $('#opt1').focus();
+                        $('#msg').html("Option A required");
+                        return false;
+                    }
+                    if ($('#opt2').val() === "")
+                    {
+                        $('#opt2').focus();
+                        $('#msg').html("Option B required");
+                        return false;
+                    }
+                    if ($('#opt3').val() === "")
+                    {
+                        $('#opt3').focus();
+                        $('#msg').html("Option C required");
+                        return false;
+                    }
+                    if ($('#opt4').val() === "")
+                    {
+                        $('#opt4').focus();
+                        $('#msg').html("Option D required");
+                        return false;
+                    }
+                    if (!($('#c1').is(':checked') || $('#c2').is(':checked') || $('#c3').is(':checked') || $('#c4').is(':checked')))
+                    {
+                        $('#opt3').focus();
+                        $('#msg').html("Select atleast one correct option");
+                        return false;
+                    }
+                    return true;
+                }
+            });
+        </script>
+        <style type="text/css">
+            #metadata label {
+                position: absolute;
+                width: 100px;
+                margin: 10px;
+            }
+            #metadata input {
+                position: relative;
+                left: 100px;
+                margin: 10px;
+            }
+            #content label {
+                margin: 10px;
+            }
+            #content input, textarea {
+                margin: 10px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="my-header">modGuru</div>
+        <div style="width: 48%; float: left; padding: 1%">
+            <div id="metadata">
+                <label for="author">Author:</label>
+                <input type="text" id="author"/> 
+                <br/>
+                <label for="topic">Topic:</label>
+                <input type="text" id="topic"/> 
+                <br/>
+                <label for="time">Time Limit:</label>
+                <input type="text" id="time"/> 
+                <br/>
+                <label for="password">Password:</label>
+                <input type="password" id="password"/> 
+                <br/>
+                <input id="bt_next" type="button" class="ui-button" value="Next"/>
+            </div>
+            <div id="content">
+                <label for="question">Question:</label>
+                <br/>
+                <textarea id="question"></textarea> 
+                <br/>
+                <label for="opt1">A) </label>
+                <input type="checkbox" id="c1"/> 
+                <input type="text" id="opt1"/>
+                <br/>
+                <label for="opt2">B) </label>
+                <input type="checkbox" id="c2"/> 
+                <input type="text" id="opt2"/>
+                <br/>
+                <label for="opt3">C) </label>
+                <input type="checkbox" id="c3"/>
+                <input type="text" id="opt3"/>
+                <br/>
+                <label for="opt4">D) </label>
+                <input type="checkbox" id="c4"/> 
+                <input type="text" id="opt4"/>
+                <br/>
+                <label for="note">Note or Explanation:</label>
+                <br/>
+                <textarea id="note"></textarea> 
+                <br/>
+                <input id="bt_add" type="button" class="ui-button" value="Add Question"/>
+            </div>
+            <span id="msg" style="color: red"></span>
+        </div>
+        <br/>
+        <div style="width: 48%; border-left: #000; float: right; padding: 1%">
+            <h4>XML File:</h4>
+            <textarea id="ResultXml" style="width: 80%; height: 30em" readonly="readonly"></textarea>
+        </div>
+        <div class="my-header my-footer">modGuru</div>
+    </body>
+</html>
