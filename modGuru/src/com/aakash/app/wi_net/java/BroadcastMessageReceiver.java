@@ -22,7 +22,7 @@ public class BroadcastMessageReceiver extends BroadcastReceiver {
                     @Override
                     public void run() {
                         Log.e("Msgs", "[ack/quiz/" + ipAddr + "]");
-                        SupplicantBroadcast.server.addClient(ipAddr);
+                        SupplicantBroadcast.sendServer.addSendClient(ipAddr);
                         SupplicantBroadcast.broadcastMessage.sendMessage("[ack/quiz/" + ipAddr + "]", SupplicantBroadcast.mtu, 5573, ipAddr);
                     }
                 }).start();
@@ -32,12 +32,9 @@ public class BroadcastMessageReceiver extends BroadcastReceiver {
                     @Override
                     public void run() {
                         Log.e("Msgs", "[ack/result/" + ipAddr + "]");
+                  		SupplicantBroadcast.receiveServer.addReceiveClient(ipAddr);
                         SupplicantBroadcast.broadcastMessage.sendMessage("[ack/result/" + ipAddr + "]", SupplicantBroadcast.mtu, 5573, ipAddr);
-                        try {
-                            Thread.sleep(3000);
-                            new Client().execute(ipAddr, "5571");
-                        } catch (Exception e) {
-                        }
+                        Log.e("ResClient", "Created"+"  "+ipAddr);
                     }
                 }).start();
             } else if (message.equals("[ack/quiz" + SupplicantBroadcast.ipAddr + "]")) {

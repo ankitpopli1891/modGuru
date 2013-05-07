@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 
 import android.content.Context;
 import android.os.Handler;
@@ -15,13 +14,14 @@ public class Server {
     private ServerSocket server;
     private Context context;
     private static String path;
-    private ArrayList<String> clients;
+    private UniqueList<String> sendClientList, receiveClientList;
 
     public Server(Context context, int port) {
         try {
             server = new ServerSocket(port);
             this.context = context;
-            clients = new ArrayList<String>();
+            sendClientList = new UniqueList<String>();
+            receiveClientList = new UniqueList<String>();
             new Thread() {
                 public void run() {
                     startAcceptingClients();
@@ -35,6 +35,11 @@ public class Server {
 
     public static void setPath(String filePath) {
         path = filePath;
+    }
+    
+    public static void clearpath()
+    {
+    	path=null;
     }
 
     public void destroy() {
@@ -58,28 +63,46 @@ public class Server {
         }
     }
 
-    public void addClient(String ip) {
+    public void addSendClient(String ip) {
         try {
             Log.e("Set Data", ip);
-            clients.add(ip);
+            sendClientList.add(ip);
         } catch (Exception e) {
             Log.e("Wi-Net Error", e.getMessage(), e);
         }
     }
 
+    public void addReceiveClient(String ip) {
+        try {
+            Log.e("Set Data", ip);
+            receiveClientList.add(ip);
+        } catch (Exception e) {
+            Log.e("Wi-Net Error", e.getMessage(), e);
+        }
+    }
+    
     private void sendData(final Socket client) {
         Log.e("Send", "1");
         final String ip = client.getInetAddress().getHostAddress();
-        if (clients.contains(ip)) {
+        if (sendClientList.contains(ip)) {
             if (path != null) {
                 new Handler(context.getMainLooper()).post(new Runnable() {
                     @Override
                     public void run() {
-                        new SendFileAsync(context, client).execute(new File(path));
-                        clients.remove(ip);
+                        new SendFileAsync(context, client, true).execute(new File(path));
+                        sendClientList.remove(ip);
                     }
                 });
             }
+        }
+        if (receiveClientList.contains(ip)) {
+                new Handler(context.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        new SendFileAsync(context, client, false).execute();
+                        receiveClientList.remove(ip);
+                    }
+                });
         }
     }
 }

@@ -36,11 +36,13 @@ public class StroreData {
                             file.getParentFile().mkdirs();
                         }
                         if (file.exists()) {
-                            File oldResFolder = new File(Environment.getDataDirectory().getAbsolutePath() + "/data/" + Main.PACKAGE_NAME + "/res/" + file);
-                            File newResFolder = new File(Environment.getDataDirectory().getAbsolutePath() + "/data/" + Main.PACKAGE_NAME + "/res/" + file + "-" + System.currentTimeMillis());
+                            File oldResFolder = new File(Environment.getDataDirectory().getAbsolutePath() + "/data/" + Main.PACKAGE_NAME + "/res/" + file.getParentFile().getName());
+                            File newResFolder = new File(Environment.getDataDirectory().getAbsolutePath() + "/data/" + Main.PACKAGE_NAME + "/res/" + file.getParentFile().getName() + "-" + System.currentTimeMillis());
                             if (oldResFolder.isDirectory()) {
                                 oldResFolder.renameTo(newResFolder);
                             }
+                            file.getParentFile().mkdirs();
+                            file.createNewFile();
                         } else {
                             file.createNewFile();
                         }

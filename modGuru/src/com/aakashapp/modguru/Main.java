@@ -1,6 +1,7 @@
 package com.aakashapp.modguru;
 
 import com.aakash.app.wi_net.java.BroadcastMessageReceiver;
+import com.aakash.app.wi_net.java.Server;
 import com.aakash.app.wi_net.java.SupplicantBroadcast;
 
 import android.app.Activity;
@@ -91,6 +92,7 @@ public class Main extends Activity {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		Server.clearpath();
 		unregisterReceiver(broadcast);
 		unregisterReceiver(receiver);
 	}
