@@ -20,7 +20,7 @@ public class ImportFile {
 		Parser parser = new Parser(new FileInputStream(new File(file)));
 		if(!parser.extractQuiz().getScore().equals(""))
 			throw new SAXException("Score not set to blank");
-		
+
 		File sourceFile = new File(file);
 
 		File myDir = new File(Environment.getDataDirectory().getAbsolutePath()+"/data/"+Main.PACKAGE_NAME+"/quiz/");

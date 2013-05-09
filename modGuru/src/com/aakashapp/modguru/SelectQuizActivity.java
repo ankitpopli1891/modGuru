@@ -87,7 +87,7 @@ public class SelectQuizActivity extends Activity {
 					listValues.put("totalQues", quesCount);
 				else
 					listValues.put("totalQues", String.valueOf(totalQues));
-					
+
 				listView.add(listValues);
 			}
 			if(listView.size()<1) {
@@ -189,7 +189,6 @@ public class SelectQuizActivity extends Activity {
 					alert.setPositiveButton("Full Quiz", new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int whichButton) {
 							try {
-								/*Might be causing problem*/ 
 								ModifyQuizXML modifyQuizXML = new ModifyQuizXML(Environment.getDataDirectory().getAbsolutePath() +"/data/"+Main.PACKAGE_NAME+"/quiz/" + file);
 								modifyQuizXML.setAttribute("quiz", "score", "");
 								modifyQuizXML.setAttribute("quiz", "quesCount", "");
@@ -474,7 +473,7 @@ public class SelectQuizActivity extends Activity {
 			Log.e("Broadcast", e.getMessage(), e);
 		}
 	}
-	
+
 	@Override
 	public void onBackPressed() {
 		stopBroadcasting();

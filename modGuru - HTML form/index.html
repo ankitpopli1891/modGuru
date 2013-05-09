@@ -24,8 +24,8 @@
                 });
 
                 var template = [
-                    '<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>',
-                    '<quiz author="<?author?>" topic="<?topic?>" time="<?time?>" password="<?password?>"> date="<?date?>"',
+                    '<?xml version=\'1.0\' encoding=\'UTF-8\' standalone=\'yes\' ?>',
+                    '<quiz author="<?author?>" topic="<?topic?>" time="<?time?>" score="" password="<?password?>" date="<?date?>">',
                     '</quiz>'
                 ].join('\r\n');
 
@@ -44,35 +44,35 @@
                         mm = '0' + mm;
                     }
                     today = dd + '/' + mm + '/' + yyyy;
-                            
+
                     var variables = {
-                    'author': $('#author').val(),
-                            'topic': $('#topic').val(),
-                            'time': $('#time').val(),
-                            'password': $('#password').val(),
-                            'date': today
+                        'author': $('#author').val().replace(/\&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\"/g, "&quot;").replace(/\'/g, "&apos;"),
+                        'topic': $('#topic').val().replace(/\&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\"/g, "&quot;").replace(/\'/g, "&apos;"),
+                        'time': $('#time').val().replace(/\&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\"/g, "&quot;").replace(/\'/g, "&apos;"),
+                        'password': $('#password').val().replace(/\&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\"/g, "&quot;").replace(/\'/g, "&apos;"),
+                        'date': today
                     };
 
                     newXml = template.replace(/<\?(\w+)\?>/g,
                             function(match, name) {
                                 return variables[name];
                             });
-                    $('#ResultXml').val(newXml);
+                    updateResult();
                     $('#msg').html('');
                 }
 
                 function updateQuestion() {
                     var variables = {
-                        'ques': $('#question').val(),
+                        'ques': $('#question').val().replace(/\&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\"/g, "&quot;").replace(/\'/g, "&apos;"),
                         'c1': $('#c1').is(':checked'),
-                        'opt1': $('#opt1').val(),
+                        'opt1': $('#opt1').val().replace(/\&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\"/g, "&quot;").replace(/\'/g, "&apos;"),
                         'c2': $('#c2').is(':checked'),
-                        'opt2': $('#opt2').val(),
+                        'opt2': $('#opt2').val().replace(/\&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\"/g, "&quot;").replace(/\'/g, "&apos;"),
                         'c3': $('#c3').is(':checked'),
-                        'opt3': $('#opt3').val(),
+                        'opt3': $('#opt3').val().replace(/\&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\"/g, "&quot;").replace(/\'/g, "&apos;"),
                         'c4': $('#c4').is(':checked'),
-                        'opt4': $('#opt4').val(),
-                        'note': $('#note').val()
+                        'opt4': $('#opt4').val().replace(/\&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\"/g, "&quot;").replace(/\'/g, "&apos;"),
+                        'note': $('#note').val().replace(/\&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\"/g, "&quot;").replace(/\'/g, "&apos;")
                     };
                     var questionTemplate = ['\n<question>',
                         '<ques><?ques?></ques>',
@@ -88,7 +88,7 @@
                             function(match, name) {
                                 if (name.match(/c\d/))
                                     if (variables[name])
-                                        return ' correct=true';
+                                        return ' correct="true"';
                                     else
                                         return '';
                                 return variables[name];
@@ -96,9 +96,13 @@
                     );
                     temp[temp.length - 2] = temp[temp.length - 2].concat(question);
                     temp = temp.join("\r\n");
-                    $('#ResultXml').val(temp);
                     newXml = temp;
+                    updateResult();
                     refresh();
+                }
+
+                function updateResult() {
+                    $('#ResultXml').val(newXml);
                 }
 
                 function refresh() {

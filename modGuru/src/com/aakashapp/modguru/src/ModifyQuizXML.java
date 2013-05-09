@@ -47,7 +47,5 @@ public class ModifyQuizXML {
 		DOMSource source = new DOMSource(document);
 		StreamResult result = new StreamResult(xmlFile);
 		transformer.transform(source, result);
- 
-		System.out.println("Done");
 	}
 }
