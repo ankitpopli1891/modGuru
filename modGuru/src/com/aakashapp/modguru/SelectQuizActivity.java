@@ -64,13 +64,13 @@ public class SelectQuizActivity extends Activity {
 				try {
 					parser = new Parser(new FileInputStream(new File(Environment.getDataDirectory().getAbsolutePath() + "/data/" + Main.PACKAGE_NAME + "/quiz/" + list[i])));
 				} catch (Exception e) {
-					Log.e("ParserError", e.getMessage());
+					Log.e("ParserError", e.getMessage(), e);
 				}
 				Quiz quiz = null;
 				try {
 					quiz = parser.extractQuiz();
 				} catch (Exception e) {
-					Log.e("ParserError", "Can't parse "+ list[i]);
+					Log.e("ParserError", "Can't parse "+ list[i], e);
 					continue;
 				} 
 				listValues = new HashMap<String, String>();
@@ -189,6 +189,7 @@ public class SelectQuizActivity extends Activity {
 					alert.setPositiveButton("Full Quiz", new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int whichButton) {
 							try {
+								/*Might be causing problem*/ 
 								ModifyQuizXML modifyQuizXML = new ModifyQuizXML(Environment.getDataDirectory().getAbsolutePath() +"/data/"+Main.PACKAGE_NAME+"/quiz/" + file);
 								modifyQuizXML.setAttribute("quiz", "score", "");
 								modifyQuizXML.setAttribute("quiz", "quesCount", "");

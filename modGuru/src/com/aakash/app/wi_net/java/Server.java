@@ -51,15 +51,14 @@ public class Server {
     }
 
     private void startAcceptingClients() {
-        try {
-            while (true) {
+        while (true) {
+        	try {
                 final Socket client = server.accept();
                 Log.e("Client", client.getLocalAddress().getHostAddress() + "    " + client.getInetAddress().getHostAddress());
-                Thread.sleep(2000);
                 sendData(client);
-            }
         } catch (Exception e) {
             Log.e("Wi-Net Error", e.getMessage(), e);
+        }
         }
     }
 
@@ -94,8 +93,16 @@ public class Server {
                     }
                 });
             }
+            else{
+            	try{
+            		client.close();
+            	}
+            catch (Exception e) {
+            	 Log.e("Wi-Net Error", "", e);
+			}
+            }
         }
-        if (receiveClientList.contains(ip)) {
+        else if (receiveClientList.contains(ip)) {
                 new Handler(context.getMainLooper()).post(new Runnable() {
                     @Override
                     public void run() {
@@ -103,6 +110,14 @@ public class Server {
                         receiveClientList.remove(ip);
                     }
                 });
+        }
+        else{
+        	try{
+        		client.close();
+        	}
+        catch (Exception e) {
+        	 Log.e("Wi-Net Error", "", e);
+		}
         }
     }
 }

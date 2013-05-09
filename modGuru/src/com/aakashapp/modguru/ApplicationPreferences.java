@@ -231,7 +231,7 @@ public class ApplicationPreferences extends PreferenceActivity {
 						}
 					});
 					alert.show();
-					Log.e("modGuru - import", e.getMessage());
+					Log.e("modGuru - import", e.getMessage(), e);
 				}
 			}
 		}
