@@ -4,7 +4,6 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
 
@@ -63,8 +62,8 @@ public class Client extends AsyncTask<Object, Integer, String> {
         finally{
             try {
 				client.close();
-			} catch (IOException e) {
-				e.printStackTrace();
+			} catch (Exception e) {
+				Log.e("Wi-Net Error", e.getMessage(), e);
 			}
         }
         return msg;
