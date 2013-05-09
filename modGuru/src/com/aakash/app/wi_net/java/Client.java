@@ -4,6 +4,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
 
@@ -39,6 +40,7 @@ public class Client extends AsyncTask<Object, Integer, String> {
         String msg = "Done";
         try {
            client = new Socket(address, port);
+           Log.e("Client-Server","Connected");
             StroreData store = new StroreData();
             DataInputStream input = new DataInputStream(client.getInputStream());
             byte[] buffer = new byte[1500];
@@ -54,10 +56,16 @@ public class Client extends AsyncTask<Object, Integer, String> {
                     read = -1;
                 }
             }
-            client.close();
         } catch (Exception e) {
             msg = "Error occurred while downloading file";
             Log.e("Wi-Net Error", "", e);
+        }
+        finally{
+            try {
+				client.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
         }
         return msg;
     }
