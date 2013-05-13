@@ -29,7 +29,10 @@ import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -45,6 +48,9 @@ public class ResultActivity extends Activity {
 	int [][] resultSummaryData;
 	int[] correctQuesCount, incorrectQuesCount, unattemptedQuesCount;
 	Spinner spinner;
+
+	int noOfAttempts;
+	TextView textViewParticipantData;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +78,8 @@ public class ResultActivity extends Activity {
 					showPieChart();
 				if(arg2==4)
 					showTabularForm();
+				if(arg2==5)
+					showParticipantResult();
 			}
 
 			@Override
@@ -81,6 +89,97 @@ public class ResultActivity extends Activity {
 				 */
 			}
 		});
+	}
+
+	protected void showParticipantResult() {
+		noOfAttempts = 0;
+
+		final EditText editText = new EditText(ResultActivity.this);
+		editText.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+		editText.setId(32145);
+		editText.setHint("Enter Participant Name/ID");
+
+		Button button = new Button(ResultActivity.this);
+		button.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+		button.setId(32154);
+		button.setText("Show Result");
+		button.setTextColor(Color.WHITE);
+		button.setBackgroundResource(R.drawable.button);
+
+		RelativeLayout.LayoutParams layoutParam = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+		layoutParam.addRule(RelativeLayout.BELOW, editText.getId());
+
+		ScrollView scrollView = new ScrollView(ResultActivity.this);
+		textViewParticipantData = new TextView(ResultActivity.this);
+		textViewParticipantData.setPadding(10, 0, 10, 0);
+		textViewParticipantData.setTextSize(TypedValue.COMPLEX_UNIT_SP,20);
+		scrollView.addView(textViewParticipantData);
+
+		RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+		layoutParams.addRule(RelativeLayout.BELOW, button.getId());
+
+		button.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				final String uid = editText.getText().toString();
+				runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						showParticipantResultData(uid);
+					}
+				});
+			}
+		});
+
+		graphView.removeAllViews();
+		graphView.addView(editText);
+		graphView.addView(button, layoutParam);
+		graphView.addView(scrollView, layoutParams);
+	}
+
+	private void showParticipantResultData(String uid) {
+		textViewParticipantData.setText("");
+		int count = 0;
+		String resultFolder = getIntent().getStringExtra("file");
+		File path=new File(Environment.getDataDirectory()+"/data/"+Main.PACKAGE_NAME+"/res/"+resultFolder);
+		for(File f: path.listFiles()) {
+			if(f.getAbsolutePath().endsWith("_" + uid))
+				try {
+					Parser p = new Parser(new FileInputStream(f));
+					ArrayList<String> extractResult = p.extractResult();
+					String resultSummary = extractResult.get(0);
+					int length = resultSummary.length();
+					int attemptedQuestions = 0, noca = 0;
+					for(int i=0;i<length;i++) {
+						if(resultSummary.charAt(i)=='1') {
+							attemptedQuestions++;
+							noca++;
+						}
+						if(resultSummary.charAt(i)=='2')
+							attemptedQuestions++;
+					}
+
+					textViewParticipantData.append("\nAttempt #"+(++count));
+					textViewParticipantData.append("\nTotal No. of Questions\t: "+length);
+					textViewParticipantData.append("\nAttempted Questions\t: "+(attemptedQuestions));
+					textViewParticipantData.append("\nCorrect Answers\t\t\t: "+noca);
+					textViewParticipantData.append("\nIncorrect Answers\t\t: "+(attemptedQuestions - noca));
+					textViewParticipantData.append("\nAggregate\t\t\t\t\t\t: "+(float)(noca*100/totalQuestions)+"%\n\n");
+
+					for(int i=0;i<length;i++) {
+						textViewParticipantData.append("Answer #" + (i+1) + ": ");
+						for(int j=0;j<4;j++)
+							if(extractResult.get(i+1).contains(String.valueOf(j)))
+								textViewParticipantData.append("("+(char)(65+j)+") ");
+						textViewParticipantData.append("\n");
+					}
+				} catch (Exception e) {
+					Log.e("IO", "RESULT",e);
+					Toast.makeText(ResultActivity.this, "One or More Results failed to Load!!", Toast.LENGTH_SHORT).show();
+				}
+		}
+		if(count==0)
+			textViewParticipantData.setText("\nNo Such Participant attempted the Quiz.");
 	}
 
 	protected void showPieChart() {

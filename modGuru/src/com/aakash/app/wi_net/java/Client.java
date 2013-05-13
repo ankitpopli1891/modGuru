@@ -108,9 +108,7 @@ public class Client extends AsyncTask<Object, Integer, String> {
     }
     
     private String getName(File file) {
-        String filename = file.getAbsolutePath();
-        filename = filename.substring(filename.indexOf("/res")) + "_" + PreferenceManager.getDefaultSharedPreferences(SupplicantBroadcast.context).getString("general_participant_id", "Anonymous");
-        return filename;
+        return System.currentTimeMillis() + "_" + PreferenceManager.getDefaultSharedPreferences(SupplicantBroadcast.context).getString("general_participant_id", "Anonymous");
     }
 
     @Override

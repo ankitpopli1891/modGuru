@@ -45,6 +45,7 @@
         <item>Line Graph</item>
         <item>Question wise Pie Chart</item>
         <item>Textual Representation</item>
+        <item>Participant wise</item>
     </string-array>
 
 </resources>
