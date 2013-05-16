@@ -98,7 +98,6 @@ public class Client extends AsyncTask<Object, Integer, String> {
             meta = "transcomp/term";
             writer.writeInt(meta.getBytes().length);
             writer.write(meta.getBytes("UTF-8"));
-            publishProgress(100);
             client.close();
         } catch (Exception e) {
             msg = "Error Sending File";
@@ -108,7 +107,7 @@ public class Client extends AsyncTask<Object, Integer, String> {
     }
     
     private String getName(File file) {
-        return System.currentTimeMillis() + "_" + PreferenceManager.getDefaultSharedPreferences(SupplicantBroadcast.context).getString("general_participant_id", "Anonymous");
+        return "/res/"+file.getParentFile().getName()+"/"+System.currentTimeMillis() + "_" + PreferenceManager.getDefaultSharedPreferences(SupplicantBroadcast.context).getString("general_participant_id", "Anonymous");
     }
 
     @Override
