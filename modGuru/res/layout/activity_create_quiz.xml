@@ -64,8 +64,8 @@
                         android:ems="10"
                         android:hint="@string/enter_opt"
                         android:paddingLeft="10dp"
-                        android:paddingRight="10dp"
-                        android:singleLine="true" />
+                        android:paddingRight="10dp" />
+
                 </TableRow>
 
                 <TableRow
@@ -89,8 +89,8 @@
                         android:ems="10"
                         android:hint="@string/enter_opt"
                         android:paddingLeft="10dp"
-                        android:paddingRight="10dp"
-                        android:singleLine="true" />
+                        android:paddingRight="10dp" />
+
                 </TableRow>
 
                 <TableRow
@@ -114,8 +114,8 @@
                         android:ems="10"
                         android:hint="@string/enter_opt"
                         android:paddingLeft="10dp"
-                        android:paddingRight="10dp"
-                        android:singleLine="true" />
+                        android:paddingRight="10dp" />
+
                 </TableRow>
 
                 <TableRow
@@ -139,8 +139,8 @@
                         android:ems="10"
                         android:hint="@string/enter_opt"
                         android:paddingLeft="10dp"
-                        android:paddingRight="10dp"
-                        android:singleLine="true" />
+                        android:paddingRight="10dp" />
+
                 </TableRow>
 
                 <EditText
